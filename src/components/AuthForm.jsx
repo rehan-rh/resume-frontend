@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { Mail, Lock, User } from "lucide-react";
 import axios from "axios";
 import { useNavigate} from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -49,6 +51,29 @@ const AuthForm = () => {
       setLoading(false);
     }
   };
+
+  const handleGoogleLogin = async (x) => {
+        
+    console.log(x.email);
+    axios.post(`${API_URL}/googlelogin`, { emailId: x.email })
+        .then((response) => {
+            const token = response.data.token;
+            localStorage.setItem('token', token);
+            alert(`Login Successful!`);
+            setFormData({ fullName: "", emailId: "", password: "", confirmPassword: "" }); 
+            navigate("/home");
+            
+            
+            
+        })
+        .catch((error) => {
+            const errorMessage = error.response?.data?.error;
+            toast.error(errorMessage, { duration: 2000 });
+        });
+ 
+};
+
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#03045E] to-[#0077B6] px-4">
@@ -146,6 +171,20 @@ const AuthForm = () => {
             {loading ? "Processing..." : isLogin ? "Sign In" : "Sign Up"}
           </motion.button>
         </form>
+
+         {/* Google Login Option (Only for Sign In) */}
+      {isLogin && (
+        <div className="mt-4 flex flex-col items-center">
+          <p className="text-gray-500 mb-2">Alternatively, you can</p>
+          <GoogleLogin 
+          onSuccess={(res) => {
+            let x = jwtDecode(res?.credential);
+            handleGoogleLogin(x);
+        }}
+
+        onError={() => console.error("Login Failed")} />
+        </div>
+      )}
 
         {/* Switch to Sign Up / Login */}
         <p className="text-center text-gray-600 mt-4">
