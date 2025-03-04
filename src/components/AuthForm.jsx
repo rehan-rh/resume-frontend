@@ -2,14 +2,16 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Lock, User } from "lucide-react";
 import axios from "axios";
+import { useNavigate} from "react-router-dom";
 
 const AuthForm = () => {
-  const [isLogin, setIsLogin] = useState(true); // Toggle between Login & Sign Up
-  const [formData, setFormData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
+  const [isLogin, setIsLogin] = useState(true);
+  const [formData, setFormData] = useState({ fullName: "", emailId: "", password: "", confirmPassword: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const API_URL = "YOUR_BACKEND_URL"; // Replace with actual backend API URL
+  const navigate = useNavigate();
+  const API_URL = "http://localhost:7777"; // Replace with your backend URL
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,21 +28,23 @@ const AuthForm = () => {
       return;
     }
 
-    const endpoint = isLogin ? "/login" : "/signup"; // Adjust as per your backend
+    const endpoint = isLogin ? "/login" : "/signup";
     const requestBody = isLogin
-      ? { email: formData.email, password: formData.password }
-      : { name: formData.name, email: formData.email, password: formData.password };
+      ? { emailId: formData.emailId, password: formData.password }
+      : { fullName: formData.fullName, emailId: formData.emailId, password: formData.password };
 
     try {
       const response = await axios.post(`${API_URL}${endpoint}`, requestBody, {
         headers: { "Content-Type": "application/json" },
+        withCredentials: true, // Ensures cookies are handled properly
       });
 
-      localStorage.setItem("token", response.data.token); // Store JWT token
+      localStorage.setItem("token", response.data.token); // Save JWT token
       alert(`${isLogin ? "Login" : "Sign Up"} Successful!`);
-      setFormData({ name: "", email: "", password: "", confirmPassword: "" }); // Clear form
+      setFormData({ fullName: "", emailId: "", password: "", confirmPassword: "" }); // Clear form
+      navigate("/home");
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
+      setError(err.response?.data || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -81,10 +85,10 @@ const AuthForm = () => {
               <User className="absolute left-3 top-3 text-gray-400" size={20} />
               <input
                 type="text"
-                name="name"
+                name="fullName"
                 placeholder="Full Name"
                 className="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#0077B6]"
-                value={formData.name}
+                value={formData.fullName}
                 onChange={handleInputChange}
                 required
               />
@@ -94,10 +98,10 @@ const AuthForm = () => {
             <Mail className="absolute left-3 top-3 text-gray-400" size={20} />
             <input
               type="email"
-              name="email"
+              name="emailId"
               placeholder="Email Address"
               className="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#0077B6]"
-              value={formData.email}
+              value={formData.emailId}
               onChange={handleInputChange}
               required
             />
