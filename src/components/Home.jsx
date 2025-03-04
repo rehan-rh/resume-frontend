@@ -4,6 +4,7 @@ import { UploadCloud, FileText, ArrowRight } from "lucide-react";
 
 const Home = () => {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [dragActive, setDragActive] = useState(false);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -12,8 +13,33 @@ const Home = () => {
     }
   };
 
+  // Drag and drop handlers
+  const handleDragOver = (event) => {
+    event.preventDefault();
+    setDragActive(true);
+  };
+
+  const handleDragEnter = (event) => {
+    event.preventDefault();
+    setDragActive(true);
+  };
+
+  const handleDragLeave = () => {
+    setDragActive(false);
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    setDragActive(false);
+    
+    const file = event.dataTransfer.files[0]; // Get the dropped file
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-indigo-500 text-white px-4">
       {/* Hero Section */}
       <motion.h1
         className="text-5xl font-bold text-center mb-4"
@@ -27,11 +53,15 @@ const Home = () => {
         Upload your resume and let AI analyze its strengths and weaknesses, providing insights to enhance your career growth.
       </p>
 
-      {/* File Upload Box */}
+      {/* Drag & Drop + Click Upload Box */}
       <motion.label
         htmlFor="resume-upload"
-        className="w-80 md:w-96 h-48 bg-white/10 border border-white/20 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/20 transition-all"
+        className={`w-80 md:w-126 h-68 bg-white/10 border ${dragActive ? "border-white/40 bg-white/20" : "border-white/20"} rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/20 transition-all`}
         whileHover={{ scale: 1.05 }}
+        onDragOver={handleDragOver}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
       >
         {selectedFile ? (
           <div className="flex items-center gap-2 text-white">
@@ -40,8 +70,8 @@ const Home = () => {
           </div>
         ) : (
           <div className="flex flex-col items-center">
-            <UploadCloud size={48} className="text-white mb-2" />
-            <p className="text-sm">Drag & drop or click to upload your resume (PDF, DOCX)</p>
+            <UploadCloud size={78} className="text-white mb-2" />
+            <p className="text-sm">{dragActive ? "Drop the file here" : "Drag & drop or click to upload your resume (PDF, DOCX)"}</p>
           </div>
         )}
       </motion.label>

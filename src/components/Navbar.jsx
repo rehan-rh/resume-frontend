@@ -7,11 +7,12 @@ const Navbar = () => {
   const [profileOpen, setProfileOpen] = useState(false);
 
   return (
-    <nav className="bg-white shadow-md px-6 py-3 flex justify-between items-center">
+    <nav className="bg-[#03045E] shadow-md px-6 py-3 flex justify-between items-center text-white">
       {/* Left Side - Logo */}
-      <Link to="/" className="text-xl font-bold text-blue-600">
-        Resume Analyzer
+      <Link to="/" className="text-xl font-bold text-white">
+          R-Analyzer
       </Link>
+
 
       {/* Navigation Links (Hidden on Mobile) */}
       <div className="hidden md:flex gap-6">
@@ -29,7 +30,7 @@ const Navbar = () => {
             className="flex items-center space-x-2 text-gray-600 hover:text-blue-500"
             onClick={() => setProfileOpen(!profileOpen)}
           >
-            <UserCircle className="w-8 h-8" />
+            <UserCircle className="w-8 h-8 text-white" />
           </button>
 
           {profileOpen && (
