@@ -55,7 +55,7 @@ const AuthForm = () => {
   const handleGoogleLogin = async (x) => {
         
     console.log(x.email);
-    axios.post(`${API_URL}/googlelogin`, { emailId: x.email })
+    axios.post(`${API_URL}/googlelogin`, { emailId: x.email, fullName:x.name })
         .then((response) => {
             const token = response.data.token;
             localStorage.setItem('token', token);
@@ -172,19 +172,22 @@ const AuthForm = () => {
           </motion.button>
         </form>
 
-         {/* Google Login Option (Only for Sign In) */}
-      {isLogin && (
+  
+       
         <div className="mt-4 flex flex-col items-center">
-          <p className="text-gray-500 mb-2">Alternatively, you can</p>
-          <GoogleLogin 
+          {/* <p className="text-gray-500 mb-2">Alternatively, you can</p> */}
+          <GoogleLogin
+          text="continue_with"
           onSuccess={(res) => {
             let x = jwtDecode(res?.credential);
             handleGoogleLogin(x);
         }}
 
-        onError={() => console.error("Login Failed")} />
+        onError={() => console.error("Login Failed")}
+        
+        />
         </div>
-      )}
+      
 
         {/* Switch to Sign Up / Login */}
         <p className="text-center text-gray-600 mt-4">
