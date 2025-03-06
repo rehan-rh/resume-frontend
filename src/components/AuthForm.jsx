@@ -2,13 +2,19 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Lock, User } from "lucide-react";
 import axios from "axios";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ fullName: "", emailId: "", password: "", confirmPassword: "" });
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    emailId: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -33,18 +39,23 @@ const AuthForm = () => {
     const endpoint = isLogin ? "/login" : "/signup";
     const requestBody = isLogin
       ? { emailId: formData.emailId, password: formData.password }
-      : { fullName: formData.fullName, emailId: formData.emailId, password: formData.password };
+      : {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          emailId: formData.emailId,
+          password: formData.password,
+        };
 
     try {
       const response = await axios.post(`${API_URL}${endpoint}`, requestBody, {
         headers: { "Content-Type": "application/json" },
-        withCredentials: true, // Ensures cookies are handled properly
+        withCredentials: true,
       });
 
-      localStorage.setItem("token", response.data.token); // Save JWT token
+      localStorage.setItem("token", response.data.token);
       alert(`${isLogin ? "Login" : "Sign Up"} Successful!`);
-      setFormData({ fullName: "", emailId: "", password: "", confirmPassword: "" }); // Clear form
-      navigate("/home");
+      setFormData({ firstName: "", lastName: "", emailId: "", password: "", confirmPassword: "" });
+      navigate("/analyse");
     } catch (err) {
       setError(err.response?.data || "Something went wrong");
     } finally {
@@ -52,28 +63,18 @@ const AuthForm = () => {
     }
   };
 
-  const handleGoogleLogin = async (x) => {
-        
-    console.log(x.email);
-    axios.post(`${API_URL}/googlelogin`, { emailId: x.email, fullName:x.name })
-        .then((response) => {
-            const token = response.data.token;
-            localStorage.setItem('token', token);
-            alert(`Login Successful!`);
-            setFormData({ fullName: "", emailId: "", password: "", confirmPassword: "" }); 
-            navigate("/home");
-            
-            
-            
-        })
-        .catch((error) => {
-            const errorMessage = error.response?.data?.error;
-            toast.error(errorMessage, { duration: 2000 });
-        });
- 
-};
+  const handleGoogleLogin = async (res) => {
+    try {
+      let decoded = jwtDecode(res?.credential);
+      const response = await axios.post(`${API_URL}/googlelogin`, { token: res.credential });
 
-  
+      localStorage.setItem("token", response.data.token);
+      alert("Google Login Successful!");
+      navigate("/home");
+    } catch (error) {
+      setError("Google login failed");
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#03045E] to-[#0077B6] px-4">
@@ -83,7 +84,6 @@ const AuthForm = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        {/* Toggle Between Login & Sign Up */}
         <div className="flex justify-between mb-6">
           <button
             className={`text-lg font-semibold flex-1 p-2 transition-all ${
@@ -103,21 +103,33 @@ const AuthForm = () => {
           </button>
         </div>
 
-        {/* Form Fields */}
         <form className="space-y-4" onSubmit={handleSubmit}>
           {!isLogin && (
-            <div className="relative">
-              <User className="absolute left-3 top-3 text-gray-400" size={20} />
-              <input
-                type="text"
-                name="fullName"
-                placeholder="Full Name"
-                className="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#0077B6]"
-                value={formData.fullName}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
+            <>
+              <div className="relative">
+                <User className="absolute left-3 top-3 text-gray-400" size={20} />
+                <input
+                  type="text"
+                  name="firstName"
+                  placeholder="First Name"
+                  className="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#0077B6]"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="relative">
+                <User className="absolute left-3 top-3 text-gray-400" size={20} />
+                <input
+                  type="text"
+                  name="lastName"
+                  placeholder="Last Name"
+                  className="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#0077B6]"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </>
           )}
           <div className="relative">
             <Mail className="absolute left-3 top-3 text-gray-400" size={20} />
@@ -143,25 +155,9 @@ const AuthForm = () => {
               required
             />
           </div>
-          {!isLogin && (
-            <div className="relative">
-              <Lock className="absolute left-3 top-3 text-gray-400" size={20} />
-              <input
-                type="password"
-                name="confirmPassword"
-                placeholder="Confirm Password"
-                className="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#0077B6]"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-          )}
 
-          {/* Error Message */}
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
-          {/* Submit Button */}
           <motion.button
             type="submit"
             className="w-full bg-[#0077B6] hover:bg-[#023E8A] text-white py-3 rounded-lg font-semibold transition-all disabled:opacity-50"
@@ -172,33 +168,13 @@ const AuthForm = () => {
           </motion.button>
         </form>
 
-  
-       
         <div className="mt-4 flex flex-col items-center">
-          {/* <p className="text-gray-500 mb-2">Alternatively, you can</p> */}
           <GoogleLogin
-          text="continue_with"
-          onSuccess={(res) => {
-            let x = jwtDecode(res?.credential);
-            handleGoogleLogin(x);
-        }}
-
-        onError={() => console.error("Login Failed")}
-        
-        />
+            text="continue_with"
+            onSuccess={handleGoogleLogin}
+            onError={() => setError("Google login failed")}
+          />
         </div>
-      
-
-        {/* Switch to Sign Up / Login */}
-        <p className="text-center text-gray-600 mt-4">
-          {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-          <span
-            className="text-[#0077B6] font-semibold cursor-pointer"
-            onClick={() => setIsLogin(!isLogin)}
-          >
-            {isLogin ? "Sign Up" : "Sign In"}
-          </span>
-        </p>
       </motion.div>
     </div>
   );
