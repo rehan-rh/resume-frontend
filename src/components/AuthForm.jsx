@@ -5,6 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import { toast } from 'react-hot-toast';
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -53,7 +54,7 @@ const AuthForm = () => {
       });
 
       localStorage.setItem("token", response.data.token);
-      alert(`${isLogin ? "Login" : "Sign Up"} Successful!`);
+      toast.success(`${isLogin ? "Login" : "Sign Up"} Successful!`,{duration: 2000});
       setFormData({ firstName: "", lastName: "", emailId: "", password: "", confirmPassword: "" });
       navigate("/analyse");
     } catch (err) {
@@ -63,13 +64,16 @@ const AuthForm = () => {
     }
   };
 
-  const handleGoogleLogin = async (res) => {
+  const handleGoogleLogin = async (details) => {
     try {
-      let decoded = jwtDecode(res?.credential);
-      const response = await axios.post(`${API_URL}/googlelogin`, { token: res.credential });
+      
+      const response = await axios.post(`${API_URL}/googlelogin`, { emailId:details.email, fullName: details.name });
 
       localStorage.setItem("token", response.data.token);
-      alert("Google Login Successful!");
+      
+      toast.success(`Login Successful`,{duration: 2000});
+ 
+
       navigate("/home");
     } catch (error) {
       setError("Google login failed");
@@ -171,9 +175,13 @@ const AuthForm = () => {
         <div className="mt-4 flex flex-col items-center">
           <GoogleLogin
             text="continue_with"
-            onSuccess={handleGoogleLogin}
+            onSuccess={(res)=>{
+              let details=jwtDecode(res?.credential);
+              handleGoogleLogin(details);
+            }}
             onError={() => setError("Google login failed")}
           />
+
         </div>
       </motion.div>
     </div>
