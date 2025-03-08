@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { UploadCloud, FileText, ArrowRight } from "lucide-react";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const Home = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [dragActive, setDragActive] = useState(false);
+  const [loading, setLoading] = useState(false); // Loading state
+  const [result, setResult] = useState(null); // Store API response
+  const [display, setDisplay] = useState(false);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -35,6 +40,47 @@ const Home = () => {
     const file = event.dataTransfer.files[0]; // Get the dropped file
     if (file) {
       setSelectedFile(file);
+    }
+  };
+
+  // 🚀 API Call to Send Resume
+  const handleAnalyzeResume = async () => {
+    if (!selectedFile) {
+      alert("Please select a resume first!");
+      return;
+    }
+
+    setLoading(true);
+    setDisplay(false);
+    try {
+      // Retrieve the JWT token from cookies
+      const token = Cookies.get("token"); // Make sure you set this at login
+      if (!token) {
+        alert("User not authenticated. Please log in again.");
+        return;
+      }
+      // console.log(token); // working
+      // Create FormData to send file
+      const formData = new FormData();
+      formData.append("resume", selectedFile);
+      // console.log(selectedFile); // working
+      // Send to backend
+      const response = await axios.post("http://localhost:7777/resume/analyze", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Pass the token
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(response.data);
+      // Set the received response
+      setResult(response.data);
+      alert("Resume analysis successful!");
+      setDisplay(true);
+    } catch (error) {
+      console.error("Error analyzing resume:", error);
+      alert("Failed to analyze resume.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -88,9 +134,25 @@ const Home = () => {
         <motion.button
           className="mt-6 bg-white text-indigo-600 font-semibold px-6 py-3 rounded-lg flex items-center gap-2 hover:bg-indigo-100 transition-all"
           whileHover={{ scale: 1.1 }}
+          onClick={handleAnalyzeResume} // 🔥 Call API
+          disabled={loading}
         >
-          Analyze Resume <ArrowRight size={20} />
+          {loading ? "Analyzing..." : "Analyze Resume"} <ArrowRight size={20} />
         </motion.button>
+      )}
+
+      {/* Display Result */}
+      {result && display && (
+        <div className="mt-6 bg-white text-gray-700 p-4 rounded-lg shadow">
+          <h2 className="text-lg font-bold text-indigo-600">Resume Analysis Report</h2>
+
+          <p><strong>Overall Resume Strength:</strong> {result.score}/100</p>
+
+          <p><strong>ATS Compatibility:</strong> {result.atsFriendly ? "✅ High" : "❌ Low"}</p>
+
+          <h3 className="text-md font-semibold mt-4">Detailed Analysis:</h3>
+          <p className="whitespace-pre-line mt-2">{result.analysis}</p>
+        </div>
       )}
     </div>
   );
