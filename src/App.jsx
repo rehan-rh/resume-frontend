@@ -5,6 +5,7 @@ import Body from "./components/Body";
 import SignUp from "./components/SignUp";
 import AuthForm from "./components/AuthForm";
 import LandingPage from "./components/LandingPage";
+import Stats from "./components/Stats";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route index element={<LandingPage />} />
           <Route path="login" element={<AuthForm />} />
           <Route path="signup" element={<SignUp />} />
+          <Route path="stats" element={<Stats />} />
 
           <Route
             path="analyse"

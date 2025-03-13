@@ -14,7 +14,6 @@ const AuthForm = () => {
     lastName: "",
     emailId: "",
     password: "",
-    confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -31,11 +30,11 @@ const AuthForm = () => {
     setLoading(true);
     setError("");
 
-    if (!isLogin && formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      setLoading(false);
-      return;
-    }
+    // if (!isLogin && formData.password !== formData.confirmPassword) {
+    //   setError("Passwords do not match");
+    //   setLoading(false);
+    //   return;
+    // }
 
     const endpoint = isLogin ? "/login" : "/signup";
     const requestBody = isLogin
@@ -46,7 +45,7 @@ const AuthForm = () => {
           emailId: formData.emailId,
           password: formData.password,
         };
-
+        console.log(requestBody);
     try {
       const response = await axios.post(`${API_URL}${endpoint}`, requestBody, {
         headers: { "Content-Type": "application/json" },
@@ -55,7 +54,7 @@ const AuthForm = () => {
 
       localStorage.setItem("token", response.data.token);
       toast.success(`${isLogin ? "Login" : "Sign Up"} Successful!`,{duration: 2000});
-      setFormData({ firstName: "", lastName: "", emailId: "", password: "", confirmPassword: "" });
+      setFormData({ firstName: "", lastName: "", emailId: "", password: ""});
       navigate("/analyse");
     } catch (err) {
       setError(err.response?.data || "Something went wrong");

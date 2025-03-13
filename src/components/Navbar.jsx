@@ -59,6 +59,7 @@ const Navbar = () => {
         <Link to="/analyse" className="hover:text-blue-400">Analyze</Link>
         <Link to="/about" className="hover:text-blue-400">About</Link>
         <Link to="/contact" className="hover:text-blue-400">Contact</Link>
+        <Link to="/stats" className="hover:text-blue-400">Stats</Link>
       </div>
 
       {/* Profile & Authentication Options */}

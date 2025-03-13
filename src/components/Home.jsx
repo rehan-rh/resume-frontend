@@ -10,6 +10,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false); // Loading state
   const [result, setResult] = useState(null); // Store API response
   const [display, setDisplay] = useState(false);
+  const [jobDescription,setJobDescription]=useState("");
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -55,6 +56,8 @@ const Home = () => {
     try {
       // Retrieve the JWT token from cookies
       const token = Cookies.get("token"); // Make sure you set this at login
+      console.log("token")
+      console.log(token) 
       if (!token) {
         alert("User not authenticated. Please log in again.");
         return;
@@ -63,8 +66,10 @@ const Home = () => {
       // Create FormData to send file
       const formData = new FormData();
       formData.append("resume", selectedFile);
-      // console.log(selectedFile); // working
+      formData.append("jobDescription",jobDescription);
+      console.log(selectedFile); // working
       // Send to backend
+
       const response = await axios.post("http://localhost:7777/resume/analyze", formData, {
         headers: {
           Authorization: `Bearer ${token}`, // Pass the token
@@ -128,6 +133,25 @@ const Home = () => {
         accept=".pdf,.doc,.docx"
         onChange={handleFileChange}
       />
+
+        
+{/* Glassmorphic Job Description Text Area */}
+{selectedFile && (<div className="mt-4 flex justify-center">
+  <textarea
+    className="w-full max-w-[500px] h-20 bg-[#0c0c0c] text-white rounded-lg p-3 text-sm placeholder-gray-400 border-none outline-none transition-all
+    shadow-[0_0_20px_#6a0dad] focus:shadow-[0_0_40px_#6a0dad] focus:ring-2 focus:ring-[#6a0dad] 
+    hover:shadow-[0_0_30px_#6a0dad] caret-[#6a0dad]"
+    placeholder="🚀 Paste the job description here (Optional)"
+     value={jobDescription}
+    onChange={(e) => setJobDescription(e.target.value)}
+  />
+</div>)
+}
+
+
+
+
+{/* //till */}
 
       {/* Analyze Button */}
       {selectedFile && (
