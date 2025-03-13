@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, UserCircle, LogOut, Settings, LogIn } from "lucide-react";
+import { Menu, UserCircle, LogOut, Settings, LogIn, User } from "lucide-react";
 import Cookies from "js-cookie"; // Import js-cookie to manage cookies
 
 const Navbar = () => {
@@ -54,7 +54,7 @@ const Navbar = () => {
       </Link>
 
       {/* Navigation Links (Hidden on Mobile) */}
-      <div className="hidden md:flex gap-6">
+      <div className="hidden md:flex gap-18">
         <Link to="/" className="hover:text-blue-400">Home</Link>
         <Link to="/analyse" className="hover:text-blue-400">Analyze</Link>
         <Link to="/about" className="hover:text-blue-400">About</Link>
@@ -76,7 +76,8 @@ const Navbar = () => {
 
             {profileOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2 z-50">
-                <Link to="/profile" className="block px-4 py-2 hover:bg-gray-100 text-blue-500">Profile</Link>
+                <Link to="/profile" className="block px-4 py-2 hover:bg-gray-100 text-blue-500 flex gap-2 items-center">
+                  <User className="w-4 h-4"/>Profile</Link>
                 <Link to="/settings" className="block px-4 py-2 hover:bg-gray-100 flex items-center gap-2 text-blue-500">
                   <Settings className="w-4 h-4" /> Settings
                 </Link>

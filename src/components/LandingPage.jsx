@@ -105,13 +105,13 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 text-center bg-blue-700 text-white">
+      {/* <footer className="py-8 text-center bg-blue-700 text-white">
         <p>&copy; {new Date().getFullYear()} Resume Analyzer. All rights reserved.</p>
         <div className="mt-4">
           <Link to="/privacy-policy" className="mx-2 hover:underline">Privacy Policy</Link>
           <Link to="/terms-of-service" className="mx-2 hover:underline">Terms of Service</Link>
         </div>
-      </footer>
+      </footer> */}
     </div>
   );
 }
