@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { Card, CardContent, Typography, CircularProgress, Button } from "@mui/material";
@@ -7,6 +8,7 @@ const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [lastResume, setLastResume] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
     useEffect(() => {
         const fetchProfile = async () => {
           const token = Cookies.get("token");   // Get token for authentication
@@ -102,7 +104,7 @@ const ProfilePage = () => {
         </Card>
       )}
 
-      <Button variant="contained" color="primary" className="mt-4">
+      <Button variant="contained" color="primary" className="mt-4" onClick={() => navigate("/analyse")}>
         Upload New Resume
       </Button>
     </div>

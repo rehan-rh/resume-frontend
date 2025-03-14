@@ -76,9 +76,10 @@ const Home = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(response.data);
+      console.log(response.resume);
+      
       // Set the received response
-      setResult(response.data);
+      setResult(response.data.resume);
       alert("Resume analysis successful!");
       setDisplay(true);
     } catch (error) {
@@ -167,7 +168,7 @@ const Home = () => {
 
       {/* Display Result */}
       {result && display && (
-        <div className="mt-6 bg-white text-gray-700 p-4 rounded-lg shadow">
+        <div className="mt-6 bg-white text-gray-700 p-4 rounded-lg shadow mb-16">
           <h2 className="text-lg font-bold text-indigo-600">Resume Analysis Report</h2>
 
           <p><strong>Overall Resume Strength:</strong> {result.score}/100</p>
