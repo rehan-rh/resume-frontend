@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { 
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, 
+  PieChart, Pie, Cell, Legend 
+} from "recharts";
 
 const Stats = () => {
   const [stats, setStats] = useState(null);
@@ -21,11 +24,17 @@ const Stats = () => {
   if (loading) return <p className="text-center text-lg font-semibold mt-5">Loading statistics...</p>;
   if (!stats) return <p className="text-center text-lg font-semibold mt-5 text-red-500">Failed to load statistics.</p>;
 
-  // Transform score distribution for the bar chart
   const scoreData = stats.scoreDistribution.map((item) => ({
-    rating: item._id * 10, // Convert range to actual score (10, 20, ..., 100)
+    rating: item._id * 10,
     count: item.count,
   }));
+
+  const atsData = stats.atsFriendlyCount.map((item) => ({
+    name: item._id ? "ATS Friendly" : "Not ATS Friendly",
+    value: item.count,
+  }));
+
+  const COLORS = ["#2ECC71", "#E74C3C"];
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10 px-4">
@@ -38,9 +47,9 @@ const Stats = () => {
       </div>
 
       {/* Score Distribution Bar Chart */}
-      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-2xl">
+      <div className="bg-white shadow-lg rounded-lg p-6 mb-8 w-full max-w-2xl h-[350px]">
         <h2 className="text-xl font-semibold text-gray-700 mb-4">Score Distribution</h2>
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height="85%">
           <BarChart data={scoreData}>
             <XAxis dataKey="rating" tick={{ fontSize: 14 }} label={{ value: "Score Range", position: "insideBottom", dy: 10 }} />
             <YAxis tick={{ fontSize: 14 }} label={{ value: "Users", angle: -90, position: "insideLeft", dy: -10 }} />
@@ -49,6 +58,31 @@ const Stats = () => {
           </BarChart>
         </ResponsiveContainer>
       </div>
+
+    {/* ATS Friendly Pie Chart */}
+<div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-2xl h-[400px] flex flex-col ">
+  <h2 className="text-xl font-semibold text-gray-700 mb-4">ATS Friendly Resumes</h2>
+  <ResponsiveContainer width="100%" height="80%">
+    <PieChart>
+      <Pie 
+        data={atsData} 
+        cx="50%" 
+        cy="48%"  // Adjust this to avoid cropping
+        outerRadius={120} 
+        fill="#8884d8" 
+        dataKey="value" 
+        label
+      >
+        {atsData.map((entry, index) => (
+          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+        ))}
+      </Pie>
+      <Tooltip />
+      <Legend verticalAlign="bottom" align="center" iconSize={10} wrapperStyle={{ marginTop:80 }}  /> {/* Added spacing */}
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+
     </div>
   );
 };
