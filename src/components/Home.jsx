@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { UploadCloud, FileText, ArrowRight } from "lucide-react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 const Home = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -11,6 +12,10 @@ const Home = () => {
   const [result, setResult] = useState(null); // Store API response
   const [display, setDisplay] = useState(false);
   const [jobDescription,setJobDescription]=useState("");
+  const [data, setData] = useState([]); // Define data state
+
+
+
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -81,6 +86,16 @@ const Home = () => {
       // Set the received response
       setResult(response.data.resume);
       alert("Resume analysis successful!");
+    
+
+       // ✅ Fix: Define data inside useState
+       const sectionScores = response.data.sectionScores;
+       const newData = Object.keys(sectionScores).map((key) => ({
+         section: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize first letter
+         score: sectionScores[key],
+       }));
+       setData(newData); // ✅ Update state
+
       setDisplay(true);
     } catch (error) {
       console.error("Error analyzing resume:", error);
@@ -89,6 +104,9 @@ const Home = () => {
       setLoading(false);
     }
   };
+
+  
+
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-indigo-500 text-white px-4">
@@ -168,17 +186,29 @@ const Home = () => {
 
       {/* Display Result */}
       {result && display && (
-        <div className="mt-6 bg-white text-gray-700 p-4 rounded-lg shadow mb-16">
-          <h2 className="text-lg font-bold text-indigo-600">Resume Analysis Report</h2>
+  <div className="mt-6 bg-white text-gray-700 p-4 rounded-lg shadow mb-16">
+    <h2 className="text-lg font-bold text-indigo-600">Resume Analysis Report</h2>
+    <p><strong>Overall Resume Strength:</strong> {result.score}/100</p>
+    <p><strong>ATS Compatibility:</strong> {result.atsFriendly ? "✅ High" : "❌ Low"}</p>
 
-          <p><strong>Overall Resume Strength:</strong> {result.score}/100</p>
+    <h3 className="text-md font-semibold mt-4">Detailed Analysis:</h3>
+    <p className="whitespace-pre-line mt-2">{result.analysis}</p>
 
-          <p><strong>ATS Compatibility:</strong> {result.atsFriendly ? "✅ High" : "❌ Low"}</p>
+    {/* Bar Chart for Section-wise Scores */}
+    <div>
+            <h3 className="text-md font-semibold mt-4">Section-wise Scores:</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
+                <XAxis dataKey="section" />
+                <YAxis domain={[0, 10]} />
+                <Tooltip />
+                <Bar dataKey="score" fill="#6366F1" radius={[5, 5, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+  </div>
+)}
 
-          <h3 className="text-md font-semibold mt-4">Detailed Analysis:</h3>
-          <p className="whitespace-pre-line mt-2">{result.analysis}</p>
-        </div>
-      )}
     </div>
   );
 };
