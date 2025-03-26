@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { UploadCloud, FileText, ArrowRight } from "lucide-react";
+import { UploadCloud, FileText, ArrowRight, XCircle, CheckCircle } from "lucide-react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
@@ -185,16 +185,77 @@ const Home = () => {
       )}
 
       {/* Display Result */}
-      {result && display && (
+{result?.analysis && display && (
   <div className="mt-6 bg-white text-gray-700 p-4 rounded-lg shadow mb-16">
     <h2 className="text-lg font-bold text-indigo-600">Resume Analysis Report</h2>
-    <p><strong>Overall Resume Strength:</strong> {result.score}/100</p>
-    <p><strong>ATS Compatibility:</strong> {result.atsFriendly ? "✅ High" : "❌ Low"}</p>
 
-    <h3 className="text-md font-semibold mt-4">Detailed Analysis:</h3>
-    <p className="whitespace-pre-line mt-2">{result.analysis}</p>
+    {/* Overall Score & ATS Compatibility */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="bg-gray-100 p-4 rounded-lg">
+        <h3 className="text-md font-semibold">ATS Score</h3>
+        <p className="text-lg font-bold">{result.analysis.score}/100</p>
+      </div>
+      <div className="bg-gray-100 p-4 rounded-lg">
+        <h3 className="text-md font-semibold">ATS Compatibility</h3>
+        <p className="text-lg font-bold flex items-center gap-2">
+          {result.analysis.atsFriendly=="true" ? (
+            <CheckCircle size={20} className="text-green-500" />
+          ) : (
+            <XCircle size={20} className="text-red-500" />
+          )} 
+          {result.analysis.atsFriendly=="true" ? "High" : "Low"}
+        </p>
+      </div>
+    </div>
 
-    {/* Bar Chart for Section-wise Scores */}
+    {/* Readability Score */}
+    <div className="bg-gray-100 p-4 rounded-lg mt-2">
+    <h3 className="text-md font-semibold mt-4">Readability Score</h3>
+    <p className="text-lg font-bold">{result.analysis.readabilityScore}/100</p>
+    </div>
+
+    {/* Grammar Issues */}
+    <div className="bg-gray-100 p-4 rounded-lg mt-2">
+    <h3 className="text-md font-semibold mt-4">Grammar Issues</h3>
+    <p className="text-gray-700">{result.analysis.grammarIssues}</p></div>
+
+    {/* Detailed Description */}
+    <div className="bg-gray-100 p-4 rounded-lg mt-2">
+    <h3 className="text-md font-semibold mt-4">Detailed Description</h3>
+    <p className="text-gray-700 whitespace-pre-line">{result.analysis.detailedDescription}</p>
+    </div>
+
+    {/* Missing Keywords */}
+    <div className="bg-gray-100 p-4 rounded-lg mt-2">
+    <h3 className="text-md font-semibold mt-4">Missing Keywords</h3>
+    <div className="flex flex-wrap gap-2 mt-2">
+      {result.analysis.missingKeywords?.length > 0 ? (
+        result.analysis.missingKeywords.map((keyword, index) => (
+          <span key={index} className="px-3 py-1 bg-red-100 text-red-600 border border-red-300 rounded-full text-sm">
+            {keyword}
+          </span>
+        ))
+      ) : (
+        <span className="text-gray-500">No missing keywords found.</span>
+      )}
+    </div>
+    </div>
+
+    {/* Suggested Jobs */}
+    <div className="bg-gray-100 p-4 rounded-lg mt-2">
+    <h3 className="text-md font-semibold mt-4">Suggested Jobs</h3>
+    <ul className="mt-2 space-y-1">
+      {result.analysis.suggestedJobs?.length > 0 ? (
+        result.analysis.suggestedJobs.map((job, index) => (
+          <li key={index} className="text-indigo-700 font-medium">• {job}</li>
+        ))
+      ) : (
+        <li className="text-gray-500">No suggested jobs available.</li>
+      )}
+    </ul>
+    </div>
+
+    {/* Section-wise Scores (Bar Chart) */}
     <div>
             <h3 className="text-md font-semibold mt-4">Section-wise Scores:</h3>
             <ResponsiveContainer width="100%" height={300}>
