@@ -51,12 +51,14 @@ const JobMatcher = () => {
   };
 
   // 🚀 API Call to Send Resume
-  const handleAnalyzeResume = async () => {
+  const handleMatchJobs = async () => {
     if (!selectedFile) {
-      alert("Please select a resume first!");
+      toast.error("Please select a resume first!", {duration:2000, position:"bottom-right"});
       return;
     }
-
+    if(!jobDescription){
+        toast.error("Please enter your preferred job", {duration:2000, position:"bottom-right"});
+    }
     setLoading(true);
     setDisplay(false);
     try {
@@ -66,7 +68,6 @@ const JobMatcher = () => {
       console.log(token) 
       if (!token) {
         toast.error("User not authenticated, Please log in", {duration:2000, position:"bottom-right"});
-        // alert("User not authenticated. Please log in again.");
         return;
       }
       // console.log(token); // working
@@ -77,27 +78,17 @@ const JobMatcher = () => {
       console.log(selectedFile); // working
       // Send to backend
 
-      const response = await axios.post("http://localhost:7777/resume/analyze", formData, {
+      const response = await axios.post("http://localhost:7777/resume/jobMatcher", formData, {
         headers: {
           Authorization: `Bearer ${token}`, // Pass the token
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(response.resume);
+      console.log(response.analysis);
       
       // Set the received response
-      setResult(response.data.resume);
-      toast.success("Resume analysis successful!", { duration:2000, position:"bottom-right" });
-      // alert("Resume analysis successful!");
-    
-
-       // ✅ Fix: Define data inside useState
-       const sectionScores = response.data.sectionScores;
-       const newData = Object.keys(sectionScores).map((key) => ({
-         section: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize first letter
-         score: sectionScores[key],
-       }));
-       setData(newData); // ✅ Update state
+      setResult(response.data);
+      toast.success("Job Matched successfully!", { duration:2000, position:"bottom-right" });
 
       setDisplay(true);
     } catch (error) {
@@ -106,9 +97,7 @@ const JobMatcher = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  
+  };  
 
 
   return (
@@ -170,9 +159,6 @@ const JobMatcher = () => {
 </div>)
 }
 
-
-
-
 {/* //till */}
 
       {/* Analyze Button */}
@@ -180,7 +166,7 @@ const JobMatcher = () => {
         <motion.button
           className="mt-6 bg-white text-indigo-600 font-semibold px-6 py-3 rounded-lg flex items-center gap-2 hover:bg-indigo-100 transition-all"
           whileHover={{ scale: 1.1 }}
-          onClick={handleAnalyzeResume} // 🔥 Call API
+          onClick={handleMatchJobs} // 🔥 Call API
           disabled={loading}
         >
           {loading ? "Analyzing..." : "Analyze Resume"} <ArrowRight size={20} />
@@ -192,29 +178,12 @@ const JobMatcher = () => {
   <div className="mt-6 bg-white text-gray-700 p-4 rounded-lg shadow mb-16">
     <h2 className="text-lg font-bold text-indigo-600">Job Matching Report</h2>
 
-    {/* Readability Score */}
-    <div className="bg-gray-100 p-4 rounded-lg mt-2">
-    <h3 className="text-md font-semibold mt-4">Readability Score</h3>
-    <p className="text-lg font-bold">{result.analysis.readabilityScore}/100</p>
-    </div>
-
-    {/* Grammar Issues */}
-    <div className="bg-gray-100 p-4 rounded-lg mt-2">
-    <h3 className="text-md font-semibold mt-4">Grammar Issues</h3>
-    <p className="text-gray-700">{result.analysis.grammarIssues}</p></div>
-
-    {/* Detailed Description */}
-    <div className="bg-gray-100 p-4 rounded-lg mt-2">
-    <h3 className="text-md font-semibold mt-4">Detailed Description</h3>
-    <p className="text-gray-700 whitespace-pre-line">{result.analysis.detailedDescription}</p>
-    </div>
-
     {/* Missing Keywords */}
     <div className="bg-gray-100 p-4 rounded-lg mt-2">
-    <h3 className="text-md font-semibold mt-4">Missing Keywords</h3>
+    <h3 className="text-md font-semibold mt-4">Missing Skills For The Given Job Role</h3>
     <div className="flex flex-wrap gap-2 mt-2">
-      {result.analysis.missingKeywords?.length > 0 ? (
-        result.analysis.missingKeywords.map((keyword, index) => (
+      {result.analysis.missingSkills?.length > 0 ? (
+        result.analysis.missingSkills.map((keyword, index) => (
           <span key={index} className="px-3 py-1 bg-red-100 text-red-600 border border-red-300 rounded-full text-sm">
             {keyword}
           </span>
@@ -227,30 +196,24 @@ const JobMatcher = () => {
 
     {/* Suggested Jobs */}
     <div className="bg-gray-100 p-4 rounded-lg mt-2">
-    <h3 className="text-md font-semibold mt-4">Suggested Jobs</h3>
-    <ul className="mt-2 space-y-1">
-      {result.analysis.suggestedJobs?.length > 0 ? (
-        result.analysis.suggestedJobs.map((job, index) => (
-          <li key={index} className="text-indigo-700 font-medium">• {job}</li>
-        ))
-      ) : (
-        <li className="text-gray-500">No suggested jobs available.</li>
-      )}
-    </ul>
+        <h3 className="text-md font-semibold mt-4">Suggested Jobs For The Resume</h3>
+        <ul className="mt-2 space-y-1">
+        {result.analysis.suggestedJobs?.length > 0 ? (
+            result.analysis.suggestedJobs.map((job, index) => (
+            <li key={index} className="text-blue-700 font-medium">• {job}</li>
+            ))
+        ) : (
+            <li className="text-gray-500">No suggested jobs available.</li>
+        )}
+        </ul>
     </div>
 
-    {/* Section-wise Scores (Bar Chart) */}
-    <div>
-            <h3 className="text-md font-semibold mt-4">Section-wise Scores:</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
-                <XAxis dataKey="section" />
-                <YAxis domain={[0, 10]} />
-                <Tooltip />
-                <Bar dataKey="score" fill="#6366F1" radius={[5, 5, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+    {/* Detailed Description */}
+    <div className="bg-gray-100 p-4 rounded-lg mt-2">
+    <h3 className="text-md font-semibold mt-4">Detailed Description of Matching</h3>
+    <p className="text-gray-700 whitespace-pre-line">{result.analysis.detailedDescription}</p>
+    </div>
+
   </div>
 )}
 

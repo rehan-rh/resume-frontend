@@ -158,7 +158,7 @@ const Home = () => {
 
         
 {/* Glassmorphic Job Description Text Area */}
-{selectedFile && (<div className="mt-4 flex justify-center">
+{/* {selectedFile && (<div className="mt-4 flex justify-center">
   <textarea
     className="w-full max-w-[500px] h-20 bg-[#0c0c0c] text-white rounded-lg p-3 text-sm placeholder-gray-400 border-none outline-none transition-all
     shadow-[0_0_20px_#6a0dad] focus:shadow-[0_0_40px_#6a0dad] focus:ring-2 focus:ring-[#6a0dad] 
@@ -168,7 +168,7 @@ const Home = () => {
     onChange={(e) => setJobDescription(e.target.value)}
   />
 </div>)
-}
+} */}
 
 
 
@@ -190,7 +190,7 @@ const Home = () => {
       {/* Display Result */}
 {result?.analysis && display && (
   <div className="mt-6 bg-white text-gray-700 p-4 rounded-lg shadow mb-16">
-    <h2 className="text-lg font-bold text-indigo-600">Resume Analysis Report</h2>
+    <h2 className="text-lg font-bold text-indigo-600">ATS Checker Report</h2>
 
     {/* Overall Score & ATS Compatibility */}
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -229,7 +229,7 @@ const Home = () => {
     </div>
 
     {/* Missing Keywords */}
-    <div className="bg-gray-100 p-4 rounded-lg mt-2">
+    {/* <div className="bg-gray-100 p-4 rounded-lg mt-2">
     <h3 className="text-md font-semibold mt-4">Missing Keywords</h3>
     <div className="flex flex-wrap gap-2 mt-2">
       {result.analysis.missingKeywords?.length > 0 ? (
@@ -242,10 +242,10 @@ const Home = () => {
         <span className="text-gray-500">No missing keywords found.</span>
       )}
     </div>
-    </div>
+    </div> */}
 
     {/* Suggested Jobs */}
-    <div className="bg-gray-100 p-4 rounded-lg mt-2">
+    {/* <div className="bg-gray-100 p-4 rounded-lg mt-2">
     <h3 className="text-md font-semibold mt-4">Suggested Jobs</h3>
     <ul className="mt-2 space-y-1">
       {result.analysis.suggestedJobs?.length > 0 ? (
@@ -256,7 +256,7 @@ const Home = () => {
         <li className="text-gray-500">No suggested jobs available.</li>
       )}
     </ul>
-    </div>
+    </div> */}
 
     {/* Section-wise Scores (Bar Chart) */}
     <div>
