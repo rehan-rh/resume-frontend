@@ -29,10 +29,11 @@ const Stats = () => {
     count: item.count,
   }));
 
-  const atsData = stats.atsFriendlyCount.map((item) => ({
-    name: item._id ? "ATS Friendly" : "Not ATS Friendly",
-    value: item.count,
-  }));
+  // ✅ Fixed ATS Data Formatting
+  const atsData = [
+    { name: "ATS Friendly", value: stats.atsFriendlyCount.find(item => item._id)?.count || 0 },
+    { name: "Not ATS Friendly", value: stats.atsFriendlyCount.find(item => !item._id)?.count || 0 }
+  ];
 
   const COLORS = ["#2ECC71", "#E74C3C"];
 
@@ -59,29 +60,30 @@ const Stats = () => {
         </ResponsiveContainer>
       </div>
 
-    {/* ATS Friendly Pie Chart */}
-<div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-2xl h-[400px] flex flex-col ">
-  <h2 className="text-xl font-semibold text-gray-700 mb-4">ATS Friendly Resumes</h2>
-  <ResponsiveContainer width="100%" height="80%">
-    <PieChart>
-      <Pie 
-        data={atsData} 
-        cx="50%" 
-        cy="48%"  // Adjust this to avoid cropping
-        outerRadius={120} 
-        fill="#8884d8" 
-        dataKey="value" 
-        label
-      >
-        {atsData.map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-        ))}
-      </Pie>
-      <Tooltip />
-      <Legend verticalAlign="bottom" align="center" iconSize={10} wrapperStyle={{ marginTop:80 }}  /> {/* Added spacing */}
-        </PieChart>
-      </ResponsiveContainer>
-    </div>
+      {/* ATS Friendly Pie Chart */}
+      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-2xl h-[400px] flex flex-col">
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">ATS Friendly Resumes</h2>
+        <ResponsiveContainer width="100%" height="80%">
+          <PieChart>
+            <Pie 
+              data={atsData} 
+              cx="50%" 
+              cy="48%"  
+              outerRadius={120} 
+              fill="#8884d8" 
+              dataKey="value"
+              nameKey="name"
+              label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`} 
+            >
+              {atsData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend verticalAlign="bottom" align="center" iconSize={10} wrapperStyle={{ marginTop: 20 }} />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
 
     </div>
   );
