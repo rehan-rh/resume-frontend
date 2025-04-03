@@ -7,6 +7,7 @@ import AuthForm from "./components/AuthForm";
 import LandingPage from "./components/LandingPage";
 import Stats from "./components/Stats";
 import ProfilePage from "./components/ProfilePage";
+import JobMatcher from "./components/JobMatcher";
 
 function App() {
   return (
@@ -23,6 +24,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="jobMatcher"
+            element={
+              <ProtectedRoute>
+                <JobMatcher />
               </ProtectedRoute>
             }
           />

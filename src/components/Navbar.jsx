@@ -56,9 +56,10 @@ const Navbar = () => {
       {/* Navigation Links (Hidden on Mobile) */}
       <div className="hidden md:flex gap-18">
         <Link to="/" className="hover:text-blue-400">Home</Link>
-        <Link to="/analyse" className="hover:text-blue-400">Analyze</Link>
-        <Link to="/about" className="hover:text-blue-400">About</Link>
-        <Link to="/contact" className="hover:text-blue-400">Contact</Link>
+        <Link to="/analyse" className="hover:text-blue-400">ATS Checker</Link>
+        <Link to="/jobMatcher" className="hover:text-blue-400">Job Matcher</Link> 
+        {/* <Link to="/about" className="hover:text-blue-400">About</Link>
+        <Link to="/contact" className="hover:text-blue-400">Contact</Link> */}
         <Link to="/stats" className="hover:text-blue-400">Stats</Link>
       </div>
 

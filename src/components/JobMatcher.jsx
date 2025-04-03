@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 import { toast } from 'react-hot-toast';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
-const Home = () => {
+const JobMatcher = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [dragActive, setDragActive] = useState(false);
   const [loading, setLoading] = useState(false); // Loading state
@@ -112,7 +112,7 @@ const Home = () => {
 
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-indigo-500 text-white px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-blue-500 text-white px-4">
       {/* Hero Section */}
       <motion.h1
         className="text-5xl font-bold text-center mb-4"
@@ -120,10 +120,10 @@ const Home = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        AI-Powered ATS Checker
+        AI-Powered Job Matcher
       </motion.h1>
       <p className="text-lg text-center max-w-xl mb-6">
-        Upload your resume and let AI analyze its strengths and weaknesses, providing insights to enhance your career growth.
+        Upload your resume and let AI give you some jobs related to your profile.
       </p>
 
       {/* Drag & Drop + Click Upload Box */}
@@ -190,26 +190,7 @@ const Home = () => {
       {/* Display Result */}
 {result?.analysis && display && (
   <div className="mt-6 bg-white text-gray-700 p-4 rounded-lg shadow mb-16">
-    <h2 className="text-lg font-bold text-indigo-600">Resume Analysis Report</h2>
-
-    {/* Overall Score & ATS Compatibility */}
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div className="bg-gray-100 p-4 rounded-lg">
-        <h3 className="text-md font-semibold">ATS Score</h3>
-        <p className="text-lg font-bold">{result.analysis.score}/100</p>
-      </div>
-      <div className="bg-gray-100 p-4 rounded-lg">
-        <h3 className="text-md font-semibold">ATS Compatibility</h3>
-        <p className="text-lg font-bold flex items-center gap-2">
-          {result.analysis.atsFriendly=="true" ? (
-            <CheckCircle size={20} className="text-green-500" />
-          ) : (
-            <XCircle size={20} className="text-red-500" />
-          )} 
-          {result.analysis.atsFriendly=="true" ? "High" : "Low"}
-        </p>
-      </div>
-    </div>
+    <h2 className="text-lg font-bold text-indigo-600">Job Matching Report</h2>
 
     {/* Readability Score */}
     <div className="bg-gray-100 p-4 rounded-lg mt-2">
@@ -277,4 +258,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default JobMatcher;

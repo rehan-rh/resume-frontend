@@ -53,7 +53,7 @@ const AuthForm = () => {
       });
 
       localStorage.setItem("token", response.data.token);
-      toast.success(`${isLogin ? "Login" : "Sign Up"} Successful!`,{duration: 2000});
+      toast.success(`${isLogin ? "Login" : "Sign Up"} Successful!`,{duration: 2000,position:"bottom-right"});
       setFormData({ firstName: "", lastName: "", emailId: "", password: ""});
       navigate("/analyse");
     } catch (err) {
@@ -70,7 +70,7 @@ const AuthForm = () => {
 
       localStorage.setItem("token", response.data.token);
       
-      toast.success(`Login Successful`,{duration: 2000});
+      toast.success(`Login Successful`,{duration: 2000,position:"bottom-right"});
  
 
       navigate("/home");
