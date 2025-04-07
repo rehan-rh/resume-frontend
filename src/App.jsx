@@ -8,6 +8,7 @@ import LandingPage from "./components/LandingPage";
 import Stats from "./components/Stats";
 import ProfilePage from "./components/ProfilePage";
 import JobMatcher from "./components/JobMatcher";
+import TestPage from "./components/TestPage";
 
 function App() {
   return (
@@ -32,6 +33,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <JobMatcher />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="test"
+            element={
+              <ProtectedRoute>
+                <TestPage />
               </ProtectedRoute>
             }
           />
