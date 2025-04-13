@@ -65,15 +65,29 @@ const AuthForm = () => {
 
   const handleGoogleLogin = async (details) => {
     try {
+      console.log("in side google login functoon");
+      console.log(details);
       
-      const response = await axios.post(`${API_URL}/googlelogin`, { emailId:details.email, fullName: details.name });
+      // const response = await axios.post(`${API_URL}/googlelogin`, { emailId:details.email, fullName: details.name });
 
+      const response = await axios.post(`${API_URL}/googlelogin`, 
+  { emailId: details.email, fullName: details.name },
+  {
+    withCredentials: true, // ✅ This is mandatory for cross-origin cookies
+    headers: { "Content-Type": "application/json" }
+  }
+);
+
+
+
+      console.log('response');
+      console.log(response);
       localStorage.setItem("token", response.data.token);
       
       toast.success(`Login Successful`,{duration: 2000,position:"bottom-right"});
  
-
-      navigate("/home");
+      setFormData({ firstName: "", lastName: "", emailId: "", password: ""});
+      navigate("/analyse");
     } catch (error) {
       setError("Google login failed");
     }
@@ -171,7 +185,7 @@ const AuthForm = () => {
           </motion.button>
         </form>
 
-        <div className="mt-4 flex flex-col items-center">
+        <div className="mt-4 flex flex-col items-center cursor-pointer">
           <GoogleLogin
             text="continue_with"
             onSuccess={(res)=>{

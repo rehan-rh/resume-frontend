@@ -352,7 +352,7 @@ const TestPage = () => {
     <h3 className="text-lg font-semibold mt-6 mb-2">Soft Skills</h3>
     <p className="italic mb-2">{result.sectionScores?.softSkills?.feedbackSummary}</p>
     {result.sectionScores?.softSkills?.strengths?.length > 0 && (
-      <p><strong>Strengths:</strong> {removeEventListeneresult.sectionScores.softSkills.strengths.join("")}</p>
+      <p><strong>Strengths:</strong> {result.sectionScores.softSkills.strengths.join("")}</p>
     )}
     {result.sectionScores?.softSkills?.suggestions?.length > 0 && (
       <p><strong>Suggestions:</strong> {result.sectionScores.softSkills.suggestions.join("")}</p>
