@@ -115,7 +115,7 @@ const Home = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-indigo-500 text-white px-4">
       {/* Hero Section */}
       <motion.h1
-        className="text-5xl font-bold text-center mb-4"
+        className="text-5xl font-bold text-center mb-4 mt-4"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -129,7 +129,7 @@ const Home = () => {
       {/* Drag & Drop + Click Upload Box */}
       <motion.label
         htmlFor="resume-upload"
-        className={`w-80 md:w-126 h-68 bg-white/10 border ${dragActive ? "border-white/40 bg-white/20" : "border-white/20"} rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/20 transition-all`}
+        className={`w-80 md:w-126 h-58 bg-white/10 border ${dragActive ? "border-white/40 bg-white/20" : "border-white/20"} rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/20 transition-all`}
         whileHover={{ scale: 1.05 }}
         onDragOver={handleDragOver}
         onDragEnter={handleDragEnter}
@@ -155,25 +155,6 @@ const Home = () => {
         accept=".pdf,.doc,.docx"
         onChange={handleFileChange}
       />
-
-        
-{/* Glassmorphic Job Description Text Area */}
-{/* {selectedFile && (<div className="mt-4 flex justify-center">
-  <textarea
-    className="w-full max-w-[500px] h-20 bg-[#0c0c0c] text-white rounded-lg p-3 text-sm placeholder-gray-400 border-none outline-none transition-all
-    shadow-[0_0_20px_#6a0dad] focus:shadow-[0_0_40px_#6a0dad] focus:ring-2 focus:ring-[#6a0dad] 
-    hover:shadow-[0_0_30px_#6a0dad] caret-[#6a0dad]"
-    placeholder="🚀 Paste the job description here (Optional)"
-     value={jobDescription}
-    onChange={(e) => setJobDescription(e.target.value)}
-  />
-</div>)
-} */}
-
-
-
-
-{/* //till */}
 
       {/* Analyze Button */}
       {selectedFile && (

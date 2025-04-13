@@ -104,7 +104,7 @@ const JobMatcher = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-blue-500 text-white px-4">
       {/* Hero Section */}
       <motion.h1
-        className="text-5xl font-bold text-center mb-4"
+        className="text-5xl font-bold text-center mb-4 mt-4"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -118,7 +118,7 @@ const JobMatcher = () => {
       {/* Drag & Drop + Click Upload Box */}
       <motion.label
         htmlFor="resume-upload"
-        className={`w-80 md:w-126 h-68 bg-white/10 border ${dragActive ? "border-white/40 bg-white/20" : "border-white/20"} rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/20 transition-all`}
+        className={`w-80 md:w-126 h-58 bg-white/10 border ${dragActive ? "border-white/40 bg-white/20" : "border-white/20"} rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/20 transition-all`}
         whileHover={{ scale: 1.05 }}
         onDragOver={handleDragOver}
         onDragEnter={handleDragEnter}
