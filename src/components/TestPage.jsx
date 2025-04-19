@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { UploadCloud, FileText, ArrowRight, XCircle, CheckCircle } from "lucide-react";
+import { UploadCloud, FileText, ArrowRight, XCircle, CheckCircle, Award, Brain, MessageSquare, Settings } from "lucide-react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from 'react-hot-toast';
@@ -9,11 +9,11 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recha
 const TestPage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [dragActive, setDragActive] = useState(false);
-  const [loading, setLoading] = useState(false); // Loading state
-  const [result, setResult] = useState(null); // Store API response
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
   const [display, setDisplay] = useState(false);
   const [jobDescription,setJobDescription]=useState("");
-  const [data, setData] = useState([]); // Define data state
+  const [data, setData] = useState([]);
   const [showQuestions,setShowQuestions]=useState(false);
   const [questions,setQuestions]=useState({});
   const [mcqAnswer, setMcqAnswer] = useState({});
@@ -21,8 +21,12 @@ const TestPage = () => {
   const [descriptiveAnswer, setDescriptiveAnswer] = useState({});
   const [evaluationResult,setEvaluationResult]=useState(false);
   const [submitting,setSubmitting]=useState(false);
-
-
+  const [showSettings, setShowSettings] = useState(false);
+  const [questionSettings, setQuestionSettings] = useState({
+    mcq: 10,
+    descriptive: 3,
+    softSkills: 2
+  });
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -31,7 +35,6 @@ const TestPage = () => {
     }
   };
 
-  // Drag and drop handlers
   const handleDragOver = (event) => {
     event.preventDefault();
     setDragActive(true);
@@ -50,12 +53,11 @@ const TestPage = () => {
     event.preventDefault();
     setDragActive(false);
     
-    const file = event.dataTransfer.files[0]; // Get the dropped file
+    const file = event.dataTransfer.files[0];
     if (file) {
       setSelectedFile(file);
     }
   };
-
 
   const handleInputChange = (type, index, value) => {
     if (type === "mcq") {
@@ -66,11 +68,14 @@ const TestPage = () => {
     else{
       setDescriptiveAnswer({...descriptiveAnswer, [index]: value });
     }
-
   };
 
+  const handleSettingsChange = (type, value) => {
+    // Ensure value is positive and an integer
+    const numValue = Math.max(1, parseInt(value) || 1);
+    setQuestionSettings({ ...questionSettings, [type]: numValue });
+  };
   
-  // 🚀 API Call to Send Resume
   const handleTakeTest = async () => {
     if (!selectedFile) {
       toast.error("Please select a resume first!", {duration:2000, position:"bottom-right"});
@@ -80,53 +85,45 @@ const TestPage = () => {
     setLoading(true);
     setShowQuestions(false);
     try {
-      // Retrieve the JWT token from cookies
-      const token = Cookies.get("token"); // Make sure you set this at login
+      const token = Cookies.get("token");
       console.log("token")
       console.log(token) 
       if (!token) {
         toast.error("User not authenticated, Please log in", {duration:2000, position:"bottom-right"});
         return;
       }
-      // console.log(token); // working
-      // Create FormData to send file
+      
       const formData = new FormData();
       formData.append("resume", selectedFile);
+      
+      // Add question count preferences to the form data
+      formData.append("mcqCount", questionSettings.mcq);
+      formData.append("descriptiveCount", questionSettings.descriptive);
+      formData.append("softSkillsCount", questionSettings.softSkills);
      
-      console.log(selectedFile); // working
-      // Send to backend
-
-
+      console.log(selectedFile);
       console.log("making the request");
 
       const response = await axios.post("http://localhost:7777/resume/taketest", formData, {
         headers: {
-          Authorization: `Bearer ${token}`, // Pass the token
+          Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
       console.log(response);
       
-    //   console.log(response.data);
-
-      // Set the received response
       setQuestions(response.data.questions);
       setShowQuestions(true);
-      toast.success("Test created  successfully!", { duration:2000, position:"bottom-right" });
-
-    //   setDisplay(true);
+      toast.success("Test created successfully!", { duration:2000, position:"bottom-right" });
     } catch (error) {
       console.error("Error analyzing resume:", error);
       alert("Failed to analyze resume.");
-       } finally {
+    } finally {
       setLoading(false);
     }
   };  
 
   const handleSubmitAnswers = async () => {
-
-  
-
     const token = Cookies.get("token");
   
     if (!token) {
@@ -140,8 +137,7 @@ const TestPage = () => {
       mcq: questions.mcq.map((q, index) => ({
         question: q.question,
         selectedAnswer: mcqAnswer[index] || "Not answered",
-        correctAnswer: q.answer, // assuming it's available in backend response
-
+        correctAnswer: q.answer,
       })),
       descriptive: questions.descriptive.map((q, index) => ({
         question: q.question,
@@ -164,14 +160,12 @@ const TestPage = () => {
       });
   
       console.log("Evaluation result:", response.data);
-      setResult(response.data); // store score/result
+      setResult(response.data);
       
       console.log(response.data);
       
       setShowQuestions(false);
-
       setEvaluationResult(true);
-  
       setSubmitting(false);
       
       toast.success("Answers submitted and evaluated successfully!", { duration: 2000, position: "bottom-right" });
@@ -181,11 +175,13 @@ const TestPage = () => {
       toast.error("Failed to submit answers", { duration: 2000, position: "bottom-right" });
     }
   };
-  
 
+  const toggleSettings = () => {
+    setShowSettings(!showSettings);
+  };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-purple-500 text-white px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-purple-600 to-purple-800 text-white px-4 py-10">
       {/* Hero Section */}
       <motion.h1
         className="text-5xl font-bold text-center mb-4 mt-6"
@@ -232,12 +228,68 @@ const TestPage = () => {
         onChange={handleFileChange}
       />
   
-  
+      {/* Toggle Settings Button */}
+      {selectedFile && (
+        <div className="mt-4 flex flex-col items-center">
+          <button
+            onClick={toggleSettings}
+            className="bg-white/20 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-white/30 transition-all"
+          >
+            <Settings size={18} /> {showSettings ? "Hide Settings" : "Customize Questions Count"}
+          </button>
+          
+          {/* Settings Panel */}
+          {showSettings && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              className="mt-4 bg-white/10 p-4 rounded-lg w-80"
+            >
+              <h3 className="font-semibold mb-3 text-center">Questions Count Settings</h3>
+              <div className="grid grid-cols-1 gap-3">
+                <div>
+                  <label className="block text-sm mb-1">Multiple Choice (MCQ)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="50"
+                    value={questionSettings.mcq}
+                    onChange={(e) => handleSettingsChange("mcq", e.target.value)}
+                    className="w-full px-3 py-2 bg-white/20 rounded-md text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm mb-1">Descriptive Questions</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="20"
+                    value={questionSettings.descriptive}
+                    onChange={(e) => handleSettingsChange("descriptive", e.target.value)}
+                    className="w-full px-3 py-2 bg-white/20 rounded-md text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm mb-1">Soft Skills Questions</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="20"
+                    value={questionSettings.softSkills}
+                    onChange={(e) => handleSettingsChange("softSkills", e.target.value)}
+                    className="w-full px-3 py-2 bg-white/20 rounded-md text-white"
+                  />
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </div>
+      )}
   
       {/* Analyze Button */}
       {selectedFile && (
         <motion.button
-          className="mt-6 bg-white text-indigo-600 font-semibold px-6 py-3 rounded-lg flex items-center gap-2 hover:bg-indigo-100 transition-all"
+          className="mt-6 bg-white text-purple-600 font-semibold px-6 py-3 rounded-lg flex items-center gap-2 hover:bg-indigo-100 transition-all shadow-lg"
           whileHover={{ scale: 1.1 }}
           onClick={handleTakeTest}
           disabled={loading}
@@ -246,123 +298,253 @@ const TestPage = () => {
         </motion.button>
       )}
 
+      {/* QUESTIONS SECTION - IMPROVED UI */}
+      {showQuestions && questions && (
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mt-10 bg-gradient-to-br from-purple-100 to-pink-50 text-purple-900 p-8 rounded-2xl max-w-4xl w-full mb-16 shadow-xl"
+        >
+          <h2 className="text-3xl font-bold mb-8 text-center text-purple-800 border-b-2 border-purple-300 pb-2">
+            Interview Questions
+          </h2>
+          
+          {/* MCQs Section */}
+          <div className="mb-12 bg-white/80 rounded-xl p-6 shadow-md">
+            <div className="flex items-center gap-3 mb-4">
+              <Brain size={24} className="text-purple-700" />
+              <h2 className="text-2xl font-bold text-purple-700">Technical MCQs</h2>
+            </div>
+            
+            {questions.mcq.map((q, index) => (
+              <div key={index} className="mb-6 bg-purple-50 p-4 rounded-lg">
+                <p className="font-semibold text-purple-900">{index + 1}. {q.question}</p>
+                <div className="flex flex-col mt-3 ml-2">
+                  {q.options.map((option, i) => (
+                    <label key={i} className="mb-2 flex items-center hover:bg-purple-100 p-2 rounded-md transition-all">
+                      <input
+                        type="radio"
+                        name={`mcq-${index}`}
+                        value={option}
+                        checked={mcqAnswer[index] === option}
+                        onChange={() => handleInputChange("mcq", index, option)}
+                        className="mr-2 ml-2 accent-purple-700"
+                      />
+                      <span>{option}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
 
-{showQuestions && questions && (
-  <div className="mt-10 bg-white text-black p-6 rounded-xl max-w-4xl w-full mb-16">
-    {/* MCQs Section */}
-    <h2 className="text-2xl font-bold mb-4 text-purple-600 shadow-lg text-center">MCQ Questions</h2>
-    {questions.mcq.map((q, index) => (
-      <div key={index} className="mb-6">
-        <p className="font-semibold">{index + 1}. {q.question}</p>
-        <div className="flex flex-col mt-2">
-          {q.options.map((option, i) => (
-            <label key={i} className="mb-1">
-              <input
-                type="radio"
-                name={`mcq-${index}`}
-                value={option}
-                checked={mcqAnswer[index] === option}
-                onChange={() => handleInputChange("mcq", index, option)}
-                className="mr-2 ml-4"
-              />
-              {option}
-            </label>
-          ))}
-        </div>
-      </div>
-    ))}
+          {/* Descriptive Questions Section */}
+          <div className="mb-12 bg-white/80 rounded-xl p-6 shadow-md">
+            <div className="flex items-center gap-3 mb-4">
+              <MessageSquare size={24} className="text-purple-700" />
+              <h2 className="text-2xl font-bold text-purple-700">Descriptive Questions</h2>
+            </div>
+            
+            {questions.descriptive.map((q, index) => (
+              <div key={index} className="mb-6 bg-purple-50 p-4 rounded-lg">
+                <p className="font-semibold text-purple-900">{index + 1}. {q.question}</p>
+                <textarea
+                  className="w-full mt-3 p-3 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  rows="4"
+                  placeholder="Type your answer here..."
+                  value={descriptiveAnswer[index] || ""}
+                  onChange={(e) => handleInputChange("descriptive", index, e.target.value)}
+                />
+              </div>
+            ))}
+          </div>
 
-     {/* Descriptive Questions Section */}
-     <h2 className="mt-8 text-2xl font-bold mb-4 text-purple-600 shadow-lg text-center">Descriptive Questions</h2>
-    {questions.descriptive.map((q, index) => (
-      <div key={index} className="mb-6">
-        <p className="font-semibold">{index + 1}. {q.question}</p>
-        <textarea
-          className="w-full mt-2 p-2 border border-gray-300 rounded-md"
-          rows="4"
-          value={descriptiveAnswer[index] || ""}
-          onChange={(e) => handleInputChange("descriptive", index, e.target.value)}
-        />
-      </div>
-    ))}
+          {/* Soft Skills Section */}
+          <div className="mb-8 bg-white/80 rounded-xl p-6 shadow-md">
+            <div className="flex items-center gap-3 mb-4">
+              <Award size={24} className="text-purple-700" />
+              <h2 className="text-2xl font-bold text-purple-700">Soft Skills Questions</h2>
+            </div>
+            
+            {questions.softSkills.map((q, index) => (
+              <div key={index} className="mb-6 bg-purple-50 p-4 rounded-lg">
+                <p className="font-semibold text-purple-900">{index + 1}. {q.question}</p>
+                <textarea
+                  className="w-full mt-3 p-3 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  rows="4"
+                  placeholder="Type your answer here..."
+                  value={softSkillAnswer[index] || ""}
+                  onChange={(e) => handleInputChange("softskills", index, e.target.value)}
+                />
+              </div>
+            ))}
+          </div>
 
-    {/* Soft Skills Section */}
-    <h2 className="mt-8 text-2xl font-bold mb-4 text-purple-600 shadow-lg text-center">Soft Skills Questions</h2>
-    {questions.softSkills.map((q, index) => (
-      <div key={index} className="mb-6">
-        <p className="font-semibold">{index + 1}. {q.question}</p>
-        <textarea
-          className="w-full mt-2 p-2 border border-gray-300 rounded-md"
-          rows="4"
-          value={softSkillAnswer[index] || ""}
-          onChange={(e) => handleInputChange("softskills", index, e.target.value)}
-        />
-      </div>
-    ))}
+          <div className="flex justify-center">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleSubmitAnswers}
+              className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-8 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-600 shadow-lg flex items-center gap-2"
+              disabled={submitting}
+            >
+              {submitting ? "Submitting..." : "Submit Answers"} <ArrowRight size={20} />
+            </motion.button>
+          </div>
+        </motion.div>
+      )}
 
-    <button
-      onClick={handleSubmitAnswers}
-      className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
-      >
-      {submitting?"Submitting the Answers..":"Submit Answers"}
-    </button>
-  </div>
-)}
+      {/* EVALUATION RESULTS SECTION - IMPROVED UI */}
+      {evaluationResult && (
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mt-10 bg-gradient-to-br from-purple-100 to-pink-50 text-purple-900 p-8 rounded-2xl max-w-5xl w-full mb-16 shadow-xl"
+        >
+          <h2 className="text-3xl font-bold mb-8 text-center text-purple-800 border-b-2 border-purple-300 pb-2">
+            Evaluation Results
+          </h2>
 
-{evaluationResult && (
-  <div className="mt-10 bg-white text-black p-6 rounded-xl max-w-6xl w-[100%] mb-16">
-    <h2 className="text-2xl font-bold mb-4 text-center">Evaluation Results</h2>
+          {/* MCQ Section */}
+          <div className="mb-10 bg-white/80 rounded-xl p-6 shadow-md">
+            <div className="flex items-center gap-3 mb-4 pb-2 border-b border-purple-200">
+              <Brain size={24} className="text-purple-700" />
+              <h3 className="text-xl font-bold text-purple-700">Technical MCQs</h3>
+              <div className="ml-auto bg-purple-100 px-4 py-1 rounded-full font-semibold">
+                Score: {result.sectionScores?.mcq?.score} / {result.sectionScores?.mcq?.total}
+              </div>
+            </div>
+            
+            {result.sectionScores?.mcq?.details?.map((item, index) => (
+              <div key={index} className={`mb-6 p-4 rounded-lg ${item.selectedAnswer === item.correctAnswer ? "bg-green-50" : "bg-red-50"} border-l-4 ${item.selectedAnswer === item.correctAnswer ? "border-green-400" : "border-red-400"}`}>
+                <p className="font-semibold">{index + 1}. {item.question}</p>
+                <div className="mt-2 pl-4">
+                  <div className="flex items-center">
+                    {item.selectedAnswer === item.correctAnswer ? 
+                      <CheckCircle size={16} className="text-green-500 mr-2" /> : 
+                      <XCircle size={16} className="text-red-500 mr-2" />
+                    }
+                    <p className={`${item.selectedAnswer === item.correctAnswer ? "text-green-600" : "text-red-600"} font-medium`}>
+                      Your Answer: {item.selectedAnswer}
+                    </p>
+                  </div>
+                  
+                  <div className="flex items-center mt-1">
+                    <CheckCircle size={16} className="text-blue-500 mr-2" />
+                    <p className="text-blue-600 font-medium">Correct Answer: {item.correctAnswer}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
 
-    {/* ✅ MCQ Section */}
-    <h3 className="text-lg font-semibold mb-2 text-purple-800">For MCQ :</h3>
-    {result.sectionScores?.mcq?.details?.map((item, index) => (
-      <div key={index} className="mb-4 ml-4">
-        <p className="font-semibold">{index + 1}. {item.question}</p>
-        <p className={`mt-1 ${item.selectedAnswer === item.correctAnswer ? "text-green-600" : "text-red-600"}`}>
-          Your Answer: {item.selectedAnswer}
-        </p>
-        <p className="text-blue-600">Correct Answer: {item.correctAnswer}</p>
-      </div>
-    ))}
-    <p className="font-medium text-2xl leading-tight font-sans m-4">Total Score: {result.sectionScores?.mcq?.score} / {result.sectionScores?.mcq?.total}</p>
+          {/* Descriptive Section */}
+          <div className="mb-10 bg-white/80 rounded-xl p-6 shadow-md">
+            <div className="flex items-center gap-3 mb-4 pb-2 border-b border-purple-200">
+              <MessageSquare size={24} className="text-purple-700" />
+              <h3 className="text-xl font-bold text-purple-700">Descriptive Questions</h3>
+            </div>
+            
+            <div className="p-4 bg-purple-50 rounded-lg">
+              <p className="italic text-purple-800">{result.sectionScores?.descriptive?.feedbackSummary}</p>
+            </div>
+          </div>
 
-    {/* ✅ Descriptive Section */}
-    <h3 className="text-lg font-semibold mt-6 mb-2 text-purple-800"> For Descriptive Questions :</h3>
-    <p className="italic mb-2 ml-4">{result.sectionScores?.descriptive?.feedbackSummary}</p>
+          {/* Soft Skills Section */}
+          <div className="mb-10 bg-white/80 rounded-xl p-6 shadow-md">
+            <div className="flex items-center gap-3 mb-4 pb-2 border-b border-purple-200">
+              <Award size={24} className="text-purple-700" />
+              <h3 className="text-xl font-bold text-purple-700">Soft Skills Assessment</h3>
+            </div>
+            
+            <div className="p-4 bg-purple-50 rounded-lg mb-4">
+              <p className="italic text-purple-800">{result.sectionScores?.softSkills?.feedbackSummary}</p>
+            </div>
+            
+            {result.sectionScores?.softSkills?.strengths?.length > 0 && (
+              <div className="mb-4 p-3 bg-green-50 rounded-lg border-l-4 border-green-400">
+                <p className="font-bold text-green-700">Strengths:</p>
+                <p className="text-green-800 mt-1">{result.sectionScores.softSkills.strengths.join("")}</p>
+              </div>
+            )}
+            
+            {result.sectionScores?.softSkills?.suggestions?.length > 0 && (
+              <div className="mb-4 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+                <p className="font-bold text-blue-700">Suggestions:</p>
+                <p className="text-blue-800 mt-1">{result.sectionScores.softSkills.suggestions.join("")}</p>
+              </div>
+            )}
+            
+            {result.sectionScores?.softSkills?.weaknesses?.length > 0 && (
+              <div className="mb-4 p-3 bg-amber-50 rounded-lg border-l-4 border-amber-400">
+                <p className="font-bold text-amber-700">Areas for Improvement:</p>
+                <p className="text-amber-800 mt-1">{result.sectionScores.softSkills.weaknesses.join("")}</p>
+              </div>
+            )}
+          </div>
 
-    {/* ✅ Soft Skills Section */}
-    <h3 className="text-lg font-semibold mt-6 mb-2 text-purple-800">For Soft Skills Questions :</h3>
-    <p className="italic mb-2 ml-4">{result.sectionScores?.softSkills?.feedbackSummary}</p>
-    {result.sectionScores?.softSkills?.strengths?.length > 0 && (
-      <p><strong>Strengths:</strong> {result.sectionScores.softSkills.strengths.join("")}</p>
-    )}
-    {result.sectionScores?.softSkills?.suggestions?.length > 0 && (
-      <p className="ml-4"><strong>Suggestions: </strong> {result.sectionScores.softSkills.suggestions.join("")}</p>
-    )}
-    {result.sectionScores?.softSkills?.weaknesses?.length > 0 && (
-      <p className="ml-4"><strong>Weaknesses: </strong> {result.sectionScores.softSkills.weaknesses.join("")}</p>
-    )}
-
-    {/* 📋 Mentor Analysis */}
-    <div className="mb-6 mt-10">
-      <h3 className="font-semibold text-blue-700 text-2xl text-center mb-2">Mentor Analysis</h3>
-      <p><strong>Confidence Level:</strong> {result.mentorAnalysis?.confidenceLevel}</p>
-      <p><strong>Advice:</strong> {result.mentorAnalysis?.mentorAdvice}</p>
-      <p><strong>Improvement Areas:</strong> {result.mentorAnalysis?.improvementAreas?.join(". ")}</p>
-      {evaluationResult.mentorAnalysis?.strongAreas?.length > 0 && (
-        <p><strong>Strong Areas:</strong> {result.mentorAnalysis.strongAreas.join(". ")}</p>
+          {/* Mentor Analysis */}
+          <div className="bg-gradient-to-r from-purple-600/10 to-pink-500/10 rounded-xl p-6 shadow-lg border border-purple-200">
+            <h3 className="font-bold text-center text-2xl text-purple-800 mb-4 pb-2 border-b border-purple-200">Mentor Analysis</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white/80 p-4 rounded-lg shadow-sm">
+                <p className="font-bold text-purple-700 mb-1">Confidence Level:</p>
+                <div className="flex items-center">
+                  <div className={`w-full h-3 rounded-full ${result.mentorAnalysis?.confidenceLevel === 'Low' ? 'bg-red-200' : result.mentorAnalysis?.confidenceLevel === 'Medium' ? 'bg-amber-200' : 'bg-green-200'}`}>
+                    <div 
+                      className={`h-3 rounded-full ${result.mentorAnalysis?.confidenceLevel === 'Low' ? 'bg-red-500 w-1/3' : result.mentorAnalysis?.confidenceLevel === 'Medium' ? 'bg-amber-500 w-2/3' : 'bg-green-500 w-full'}`}
+                    ></div>
+                  </div>
+                  <span className="ml-3 font-semibold">{result.mentorAnalysis?.confidenceLevel}</span>
+                </div>
+              </div>
+              
+              <div className="bg-white/80 p-4 rounded-lg shadow-sm">
+                <p className="font-bold text-purple-700 mb-1">Improvement Areas:</p>
+                <ul className="list-disc pl-5">
+                  {result.mentorAnalysis?.improvementAreas?.map((area, index) => (
+                    <li key={index} className="text-purple-900 mb-1">{area}</li>
+                  ))}
+                </ul>
+              </div>
+              
+              {result.mentorAnalysis?.strongAreas?.length > 0 && (
+                <div className="bg-white/80 p-4 rounded-lg shadow-sm">
+                  <p className="font-bold text-purple-700 mb-1">Strong Areas:</p>
+                  <ul className="list-disc pl-5">
+                    {result.mentorAnalysis.strongAreas.map((area, index) => (
+                      <li key={index} className="text-purple-900 mb-1">{area}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
+              <div className="bg-white/80 p-4 rounded-lg shadow-sm md:col-span-2">
+                <p className="font-bold text-purple-700 mb-1">Mentor Advice:</p>
+                <p className="text-purple-900 italic">{result.mentorAnalysis?.mentorAdvice}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex justify-center mt-8">
+            <button 
+              onClick={() => {
+                setEvaluationResult(false);
+                setShowQuestions(false);
+                setSelectedFile(null);
+              }}
+              className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-6 py-2 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-600 shadow-lg"
+            >
+              Take Another Test
+            </button>
+          </div>
+        </motion.div>
       )}
     </div>
-
-  </div>
-)}
-
-
-
-</div>
-
   );
 }
   
-
 export default TestPage;
