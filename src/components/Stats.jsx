@@ -21,7 +21,7 @@ const Stats = () => {
       });
   }, []);
 
-  if (loading) return <p className="text-center text-lg font-semibold mt-5">Loading statistics...</p>;
+  if (loading) return <p className="text-center text-lg font-semibold mt-22">Loading statistics...</p>;
   if (!stats) return <p className="text-center text-lg font-semibold mt-5 text-red-500">Failed to load statistics.</p>;
 
   const scoreData = stats.scoreDistribution.map((item) => ({
@@ -38,7 +38,7 @@ const Stats = () => {
   const COLORS = ["#2ECC71", "#E74C3C"];
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10 px-4">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10 px-4 mt-20">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Resume Analysis Statistics</h1>
 
       {/* Total Resumes */}

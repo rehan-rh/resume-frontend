@@ -65,7 +65,7 @@ const Home = () => {
       console.log("token")
       console.log(token) 
       if (!token) {
-        toast.error("User not authenticated, Please log in", {duration:2000, position:"bottom-right"});
+        toast.error("User not authenticated, Please log in", {duration:2000, position:"bottom-left"});
         // alert("User not authenticated. Please log in again.");
         return;
       }
@@ -87,7 +87,7 @@ const Home = () => {
       
       // Set the received response
       setResult(response.data.resume);
-      toast.success("Resume analysis successful!", { duration:2000, position:"bottom-right" });
+      toast.success("Resume analysis successful!", { duration:2000, position:"bottom-left" });
       // alert("Resume analysis successful!");
     
 
@@ -112,7 +112,7 @@ const Home = () => {
 
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-indigo-500 text-white px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-indigo-500 text-white px-4 mt-22">
       {/* Hero Section */}
       <motion.h1
         className="text-5xl font-bold text-center mb-4 mt-4"
@@ -144,7 +144,7 @@ const Home = () => {
         ) : (
           <div className="flex flex-col items-center">
             <UploadCloud size={78} className="text-white mb-2" />
-            <p className="text-sm">{dragActive ? "Drop the file here" : "Drag & drop or click to upload your resume (PDF, DOCX)"}</p>
+            <p className="text-sm px-4 text-center">{dragActive ? "Drop the file here" : "Drag & drop or click to upload your resume (PDF, DOCX)"}</p>
           </div>
         )}
       </motion.label>

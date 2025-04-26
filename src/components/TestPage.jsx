@@ -78,7 +78,7 @@ const TestPage = () => {
   
   const handleTakeTest = async () => {
     if (!selectedFile) {
-      toast.error("Please select a resume first!", {duration:2000, position:"bottom-right"});
+      toast.error("Please select a resume first!", {duration:2000, position:"bottom-left"});
       return;
     }
     
@@ -89,7 +89,7 @@ const TestPage = () => {
       console.log("token")
       console.log(token) 
       if (!token) {
-        toast.error("User not authenticated, Please log in", {duration:2000, position:"bottom-right"});
+        toast.error("User not authenticated, Please log in", {duration:2000, position:"bottom-left"});
         return;
       }
       
@@ -114,7 +114,7 @@ const TestPage = () => {
       
       setQuestions(response.data.questions);
       setShowQuestions(true);
-      toast.success("Test created successfully!", { duration:2000, position:"bottom-right" });
+      toast.success("Test created successfully!", { duration:2000, position:"bottom-left" });
     } catch (error) {
       console.error("Error analyzing resume:", error);
       alert("Failed to analyze resume.");
@@ -127,7 +127,7 @@ const TestPage = () => {
     const token = Cookies.get("token");
   
     if (!token) {
-      toast.error("User not authenticated, Please log in", { duration: 2000, position: "bottom-right" });
+      toast.error("User not authenticated, Please log in", { duration: 2000, position: "bottom-left" });
       return;
     }
 
@@ -168,7 +168,7 @@ const TestPage = () => {
       setEvaluationResult(true);
       setSubmitting(false);
       
-      toast.success("Answers submitted and evaluated successfully!", { duration: 2000, position: "bottom-right" });
+      toast.success("Answers submitted and evaluated successfully!", { duration: 2000, position: "bottom-left" });
   
     } catch (error) {
       console.error("Error submitting answers:", error);
@@ -181,7 +181,7 @@ const TestPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-purple-600 to-purple-800 text-white px-4 py-10">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-purple-600 to-purple-800 text-white px-4 py-10 mt-22">
       {/* Hero Section */}
       <motion.h1
         className="text-5xl font-bold text-center mb-4 mt-6"
@@ -213,7 +213,7 @@ const TestPage = () => {
         ) : (
           <div className="flex flex-col items-center">
             <UploadCloud size={78} className="text-white mb-2" />
-            <p className="text-sm">
+            <p className="text-sm px-4 text-center">
               {dragActive ? "Drop the file here" : "Drag & drop or click to upload your resume (PDF, DOCX)"}
             </p>
           </div>
