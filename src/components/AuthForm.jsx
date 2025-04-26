@@ -71,7 +71,7 @@ const AuthForm = () => {
       // const response = await axios.post(`${API_URL}/googlelogin`, { emailId:details.email, fullName: details.name });
 
       const response = await axios.post(`${API_URL}/googlelogin`, 
-  { emailId: details.email, fullName: details.name },
+  { emailId: details.email, firstName: details.family_name, lastName: details.given_name},
   {
     withCredentials: true, // ✅ This is mandatory for cross-origin cookies
     headers: { "Content-Type": "application/json" }

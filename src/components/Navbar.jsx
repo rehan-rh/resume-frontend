@@ -49,7 +49,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="fixed bg-gradient-to-b flex from-black/20 to-transparent backdrop-blur-md w-full px-6 py-4 flex justify-between items-center">
+    <nav className="fixed bg-gradient-to-b flex from-black/20 to-transparent backdrop-blur-md w-full px-6 py-6 md:py-4 flex justify-between items-center">
     {/* <nav className="fixed top-0 left-0 w-full bg-gradient-to-b flex from-black/20 to-transparent backdrop-blur-md px-6 py-4 z-50"> */}
       {/* Left Side - Logo */}
       <Link to="/" className="font-bold text-blue text-2xl">
@@ -64,6 +64,14 @@ const Navbar = () => {
         <Link to="/test" className="hover:text-blue-400 font-medium">Interview-Prep</Link>
         <Link to="/stats" className="hover:text-blue-400 font-medium">Stats</Link>
       </div>
+
+      <div className="flex gap-4">
+      {/* Mobile Menu Button */}
+      <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
+          {isAuthenticated && (
+            <Menu className="w-8 h-8" />
+          )}
+      </button>
 
       {/* Profile & Authentication Options */}
       <div className="flex items-center gap-4">
@@ -95,15 +103,13 @@ const Navbar = () => {
           </div>
         ) : (
           // If user is not logged in, show Login button
-          <Link to="/login" className="flex items-center gap-2 bg-white text-[#03045E] px-4 py-2 rounded-lg font-semibold hover:bg-gray-200 transition">
+          <Link to="/login" className="text-xl flex items-center gap-2 bg-transparent text-[#03045E] px-4 py-2 rounded-lg font-semibold hover:bg-gray-200 transition">
             <LogIn className="w-5 h-5" /> Login
           </Link>
         )}
 
-        {/* Mobile Menu Button */}
-        <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
-          <Menu className="w-6 h-6 text-white" />
-        </button>
+      </div>
+
       </div>
 
       {/* Mobile Navigation (Shown when menuOpen is true) */}
