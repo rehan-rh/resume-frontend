@@ -50,15 +50,15 @@ const Navbar = () => {
     <nav className="bg-[#03045E] shadow-md px-6 py-3 flex justify-between items-center text-white relative">
       {/* Left Side - Logo */}
       <Link to="/" className="text-xl font-bold text-white">
-        Resume-Analyzer
+        Resume-Hub
       </Link>
 
       {/* Navigation Links (Hidden on Mobile) */}
       <div className="hidden md:flex gap-18">
         <Link to="/" className="hover:text-blue-400">Home</Link>
-        <Link to="/analyse" className="hover:text-blue-400">ATS Checker</Link>
-        <Link to="/jobMatcher" className="hover:text-blue-400">Job Matcher</Link> 
-        <Link to="/test" className="hover:text-blue-400">Test</Link>
+        <Link to="/analyse" className="hover:text-blue-400">ATS-Checker</Link>
+        <Link to="/jobMatcher" className="hover:text-blue-400">Job-Matcher</Link> 
+        <Link to="/test" className="hover:text-blue-400">Interview-Prep</Link>
         <Link to="/stats" className="hover:text-blue-400">Stats</Link>
       </div>
 
@@ -107,9 +107,10 @@ const Navbar = () => {
       {menuOpen && (
         <div className="absolute top-16 left-0 w-full bg-white shadow-md flex flex-col items-center py-4 md:hidden z-50">
           <Link to="/" className="py-2 text-[#03045E] hover:bg-gray-200 w-full text-center">Home</Link>
-          <Link to="/analyse" className="py-2 text-[#03045E] hover:bg-gray-200 w-full text-center">Analyze</Link>
-          <Link to="/about" className="py-2 text-[#03045E] hover:bg-gray-200 w-full text-center">About</Link>
-          <Link to="/contact" className="py-2 text-[#03045E] hover:bg-gray-200 w-full text-center">Contact</Link>
+          <Link to="/analyse" className="py-2 text-[#03045E] hover:bg-gray-200 w-full text-center">ATS-Checker</Link>
+          <Link to="/jobMatcher" className="py-2 text-[#03045E] hover:bg-gray-200 w-full text-center">Job-Matcher</Link> 
+          <Link to="/test" className="py-2 text-[#03045E] hover:bg-gray-200 w-full text-center">Interview-Prep</Link>
+          <Link to="/stats" className="py-2 text-[#03045E] hover:bg-gray-200 w-full text-center">Stats</Link>
           {isAuthenticated ? (
             <button className="py-2 text-[#03045E] hover:bg-gray-200 w-full text-center" onClick={handleLogout}>Logout</button>
           ) : (
