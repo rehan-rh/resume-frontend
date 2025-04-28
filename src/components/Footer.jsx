@@ -3,7 +3,7 @@ import { FaLinkedin, FaTwitter, FaGithub } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white py-6">
+    <footer className="bg-gray-900 text-white py-6 rounded-t-2xl -mt-4">
       <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
         
         {/* Left Side - Branding & Copyright */}
@@ -14,10 +14,11 @@ const Footer = () => {
 
         {/* Center - Navigation Links */}
         <div className="flex flex-wrap justify-center md:justify-start gap-4 mt-4 md:mt-0">
-          <Link to="/home" className="text-gray-400 hover:text-white text-sm">Home</Link>
-          <Link to="/analyze" className="text-gray-400 hover:text-white text-sm">Analyze</Link>
-          <Link to="/about" className="text-gray-400 hover:text-white text-sm">About</Link>
-          <Link to="/contact" className="text-gray-400 hover:text-white text-sm">Contact</Link>
+          <Link to="/home" className="text-gray-400 hover:text-white text-md">Home</Link>
+          <Link to="/analyse" className="text-gray-400 hover:text-white text-md">ATS-Checker</Link>
+        <Link to="/jobMatcher" className="text-gray-400 hover:text-white text-md">Job-Matcher</Link> 
+        <Link to="/test" className="text-gray-400 hover:text-white text-md">Interview-Prep</Link>
+        <Link to="/stats" className="text-gray-400 hover:text-white text-md">Stats</Link>
         </div>
 
         {/* Right Side - Social Media Icons */}

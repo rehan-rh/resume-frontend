@@ -53,7 +53,7 @@ const AuthForm = () => {
       });
 
       localStorage.setItem("token", response.data.token);
-      toast.success(`${isLogin ? "Login" : "Sign Up"} Successful!`,{duration: 2000,position:"bottom-right"});
+      toast.success(`${isLogin ? "Login" : "Sign Up"} Successful!`,{duration: 2000,position:"bottom-left"});
       setFormData({ firstName: "", lastName: "", emailId: "", password: ""});
       navigate("/analyse");
     } catch (err) {
@@ -71,7 +71,7 @@ const AuthForm = () => {
       // const response = await axios.post(`${API_URL}/googlelogin`, { emailId:details.email, fullName: details.name });
 
       const response = await axios.post(`${API_URL}/googlelogin`, 
-  { emailId: details.email, fullName: details.name },
+  { emailId: details.email, firstName: details.family_name, lastName: details.given_name},
   {
     withCredentials: true, // ✅ This is mandatory for cross-origin cookies
     headers: { "Content-Type": "application/json" }
@@ -84,7 +84,7 @@ const AuthForm = () => {
       console.log(response);
       localStorage.setItem("token", response.data.token);
       
-      toast.success(`Login Successful`,{duration: 2000,position:"bottom-right"});
+      toast.success(`Login Successful`,{duration: 2000,position:"bottom-left"});
  
       setFormData({ firstName: "", lastName: "", emailId: "", password: ""});
       navigate("/analyse");
@@ -94,7 +94,7 @@ const AuthForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#03045E] to-[#0077B6] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#03045E] to-[#0077B6] px-4 mt-22">
       <motion.div
         className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md"
         initial={{ opacity: 0, y: -30 }}

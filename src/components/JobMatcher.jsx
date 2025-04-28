@@ -53,11 +53,11 @@ const JobMatcher = () => {
   // 🚀 API Call to Send Resume
   const handleMatchJobs = async () => {
     if (!selectedFile) {
-      toast.error("Please select a resume first!", {duration:2000, position:"bottom-right"});
+      toast.error("Please select a resume first!", {duration:2000, position:"bottom-left"});
       return;
     }
     if(!jobDescription){
-        toast.error("Please enter your preferred job", {duration:2000, position:"bottom-right"});
+        toast.error("Please enter your preferred job", {duration:2000, position:"bottom-left"});
     }
     setLoading(true);
     setDisplay(false);
@@ -67,7 +67,7 @@ const JobMatcher = () => {
       console.log("token")
       console.log(token) 
       if (!token) {
-        toast.error("User not authenticated, Please log in", {duration:2000, position:"bottom-right"});
+        toast.error("User not authenticated, Please log in", {duration:2000, position:"bottom-left"});
         return;
       }
       // console.log(token); // working
@@ -88,7 +88,7 @@ const JobMatcher = () => {
       
       // Set the received response
       setResult(response.data);
-      toast.success("Job Matched successfully!", { duration:2000, position:"bottom-right" });
+      toast.success("Job Matched successfully!", { duration:2000, position:"bottom-left" });
 
       setDisplay(true);
     } catch (error) {
@@ -101,7 +101,7 @@ const JobMatcher = () => {
 
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-blue-500 text-white px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-blue-500 text-white px-4 mt-22">
       {/* Hero Section */}
       <motion.h1
         className="text-5xl font-bold text-center mb-4 mt-4"
@@ -133,7 +133,7 @@ const JobMatcher = () => {
         ) : (
           <div className="flex flex-col items-center">
             <UploadCloud size={78} className="text-white mb-2" />
-            <p className="text-sm">{dragActive ? "Drop the file here" : "Drag & drop or click to upload your resume (PDF, DOCX)"}</p>
+            <p className="text-sm px-4 text-center">{dragActive ? "Drop the file here" : "Drag & drop or click to upload your resume (PDF, DOCX)"}</p>
           </div>
         )}
       </motion.label>
@@ -152,7 +152,7 @@ const JobMatcher = () => {
     className="w-full max-w-[500px] h-20 bg-[#0c0c0c] text-white rounded-lg p-3 text-sm placeholder-gray-400 border-none outline-none transition-all
     shadow-[0_0_20px_#6a0dad] focus:shadow-[0_0_40px_#6a0dad] focus:ring-2 focus:ring-[#6a0dad] 
     hover:shadow-[0_0_30px_#6a0dad] caret-[#6a0dad]"
-    placeholder="🚀 Paste the job description here (Optional)"
+    placeholder="🚀 Paste the job description here"
      value={jobDescription}
     onChange={(e) => setJobDescription(e.target.value)}
   />
@@ -164,7 +164,7 @@ const JobMatcher = () => {
       {/* Analyze Button */}
       {selectedFile && (
         <motion.button
-          className="mt-6 bg-white text-indigo-600 font-semibold px-6 py-3 rounded-lg flex items-center gap-2 hover:bg-indigo-100 transition-all"
+          className="mt-6 mb-4 bg-white text-indigo-600 font-semibold px-6 py-3 rounded-lg flex items-center gap-2 hover:bg-indigo-100 transition-all"
           whileHover={{ scale: 1.1 }}
           onClick={handleMatchJobs} // 🔥 Call API
           disabled={loading}
