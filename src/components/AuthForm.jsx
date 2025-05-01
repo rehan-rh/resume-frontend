@@ -94,7 +94,7 @@ const AuthForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#03045E] to-[#0077B6] px-4 mt-22">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-t from-[#03045E] to-[#0077B6] px-4 mt-22">
       <motion.div
         className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md"
         initial={{ opacity: 0, y: -30 }}

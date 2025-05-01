@@ -4,6 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { Card, CardContent, Typography, CircularProgress, Button, Avatar, Chip, LinearProgress,Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
 import { Edit } from "@mui/icons-material";
+import toast from "react-hot-toast"
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
@@ -12,6 +13,7 @@ const ProfilePage = () => {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [firstName, setFirstName] = useState(null);
   const [lastName, setLastName] = useState(null);
+  const [modalLoading, setModalLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,16 +43,22 @@ const ProfilePage = () => {
     setOpenEditModal(true);
   }
 
-  const handleSaveProfile = () =>{
+  const handleSaveProfile = async () =>{
+    console.log("Entered into save profile");
+    setModalLoading(true);
     try {
       const token = Cookies.get("token");
-      axios.put(`${import.meta.env.VITE_BACKEND_URL}/user/update-profile`, { firstName, lastName }, {
+      const updated_user = axios.put(`${import.meta.env.VITE_BACKEND_URL}/user/update-profile`, { firstName, lastName }, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser({ ...user, firstName, lastName });
       setOpenEditModal(false);
+      toast.success("Profile Updated Successfully!",{position:"top-right", duration:2000});
     } catch (error) {
       console.error("Error updating profile:", error);
+      toast.error("Error Updating the Profile!", {position:"top-right", duration:2000});
+    }finally{
+      setModalLoading(false);
     }
   }
 
@@ -63,13 +71,13 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="mt-16 mb-16 max-w-4xl mx-auto p-6 shadow-lg rounded-lg bg-blue-200">
+    <div className="mt-26 mb-16 max-w-4xl mx-auto p-6 shadow-lg rounded-lg bg-blue-200">
       {/* Header with Avatar & Edit Button */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           {/* <Avatar src="/profile-placeholder.png" alt="Profile Picture" className="w-20 h-20" /> */}
           <div>
-            <Typography variant="h4" className="font-bold">{user.firstName} Tharun Yetti{user.lastName}</Typography>
+            <Typography variant="h4" className="font-bold">{user.firstName} {user.lastName}</Typography>
             <Typography variant="body1" className="text-gray-600">{user.emailId}</Typography>
           </div>
         </div>
@@ -116,7 +124,7 @@ const ProfilePage = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenEditModal(false)} color="secondary">Cancel</Button>
-          <Button onClick={handleSaveProfile} color="primary" variant="contained">Save</Button>
+          <Button onClick={handleSaveProfile} color="primary" variant="contained" disabled={modalLoading}>{modalLoading ? "saving...": "Save"}</Button>
         </DialogActions>
       </Dialog>
 
