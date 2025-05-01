@@ -78,7 +78,7 @@ const JobMatcher = () => {
       console.log(selectedFile); // working
       // Send to backend
 
-      const response = await axios.post("http://localhost:7777/resume/jobMatcher", formData, {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/resume/jobMatcher`, formData, {
         headers: {
           Authorization: `Bearer ${token}`, // Pass the token
           "Content-Type": "multipart/form-data",

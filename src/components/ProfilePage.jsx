@@ -23,7 +23,7 @@ const ProfilePage = () => {
         return;
       }
       try {
-        const response = await axios.get("http://localhost:7777/user/profile", {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(response.data.user);
@@ -44,7 +44,7 @@ const ProfilePage = () => {
   const handleSaveProfile = () =>{
     try {
       const token = Cookies.get("token");
-      axios.put("http://localhost:7777/user/update-profile", { firstName, lastName }, {
+      axios.put(`${import.meta.env.VITE_BACKEND_URL}/user/update-profile`, { firstName, lastName }, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser({ ...user, firstName, lastName });

@@ -104,7 +104,7 @@ const TestPage = () => {
       console.log(selectedFile);
       console.log("making the request");
 
-      const response = await axios.post("http://localhost:7777/resume/taketest", formData, {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/resume/taketest`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -152,7 +152,7 @@ const TestPage = () => {
     console.log("Sending formatted answers to backend:", formattedAnswers);
   
     try {
-      const response = await axios.post("http://localhost:7777/resume/submit-answers", formattedAnswers, {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/resume/submit-answers`, formattedAnswers, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"

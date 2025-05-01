@@ -9,7 +9,7 @@ const Stats = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:7777/resume/stats") // Change to your backend API URL
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/resume/stats`) // Change to your backend API URL
       .then((res) => res.json())
       .then((data) => {
         setStats(data);

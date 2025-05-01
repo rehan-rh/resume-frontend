@@ -77,7 +77,7 @@ const Home = () => {
       console.log(selectedFile); // working
       // Send to backend
 
-      const response = await axios.post("http://localhost:7777/resume/analyze", formData, {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/resume/analyze`, formData, {
         headers: {
           Authorization: `Bearer ${token}`, // Pass the token
           "Content-Type": "multipart/form-data",
