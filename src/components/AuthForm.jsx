@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Mail, Lock, User } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { toast } from 'react-hot-toast';
 import Cookies from "js-cookie";
@@ -189,15 +189,16 @@ const AuthForm = () => {
         </form>
 
         <div className="mt-4 flex flex-col items-center cursor-pointer">
-          <GoogleLogin
-            text="continue_with"
-            onSuccess={(res)=>{
-              let details=jwtDecode(res?.credential);
-              handleGoogleLogin(details);
-            }}
-            onError={() => setError("Google login failed")}
-          />
-
+          <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID}>
+            <GoogleLogin
+              text="continue_with"
+              onSuccess={(res)=>{
+                let details=jwtDecode(res?.credential);
+                handleGoogleLogin(details);
+              }}
+              onError={() => setError("Google login failed")}
+            />
+          </GoogleOAuthProvider>
         </div>
       </motion.div>
     </div>
