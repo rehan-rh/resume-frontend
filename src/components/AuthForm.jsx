@@ -86,7 +86,8 @@ const AuthForm = () => {
       console.log('response');
       console.log(response);
       localStorage.setItem("token", response.data.token);
-      
+      Cookies.set("token", response.data.token);
+
       toast.success(`Login Successful`,{duration: 2000,position:"bottom-left"});
  
       setFormData({ firstName: "", lastName: "", emailId: "", password: ""});
