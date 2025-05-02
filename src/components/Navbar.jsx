@@ -19,8 +19,8 @@ const Navbar = () => {
 
   // Function to check authentication based on cookies
   const checkAuth = () => {
-    // const token = Cookies.get("token"); // Retrieve token from cookies
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token"); // Retrieve token from cookies
+    // const token = localStorage.getItem("token");
     setIsAuthenticated(!!token);
     if (!token) {
       setProfileOpen(false); // Close profile dropdown if user is not authenticated
