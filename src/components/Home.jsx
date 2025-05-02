@@ -83,7 +83,7 @@ const Home = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(response.resume);
+      console.log(response.data.resume);
       
       // Set the received response
       setResult(response.data.resume);
@@ -182,21 +182,21 @@ const Home = () => {
       <div className="bg-gray-100 p-4 rounded-lg">
         <h3 className="text-md font-semibold">ATS Compatibility</h3>
         <p className="text-lg font-bold flex items-center gap-2">
-          {result.analysis.atsFriendly=="true" ? (
+          {result.analysis.atsFriendly ? (
             <CheckCircle size={20} className="text-green-500" />
           ) : (
             <XCircle size={20} className="text-red-500" />
           )} 
-          {result.analysis.atsFriendly=="true" ? "High" : "Low"}
+          {result.analysis.atsFriendly ? "High" : "Low"}
         </p>
       </div>
     </div>
 
     {/* Readability Score */}
-    <div className="bg-gray-100 p-4 rounded-lg mt-2">
+    {/* <div className="bg-gray-100 p-4 rounded-lg mt-2">
     <h3 className="text-md font-semibold mt-4">Readability Score</h3>
     <p className="text-lg font-bold">{result.analysis.readabilityScore}/100</p>
-    </div>
+    </div> */}
 
     {/* Grammar Issues */}
     <div className="bg-gray-100 p-4 rounded-lg mt-2">

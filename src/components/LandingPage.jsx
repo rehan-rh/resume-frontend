@@ -14,7 +14,7 @@ export default function LandingPage() {
 
       {/* Features Section */}
       <section className="py-16 px-8 text-center">
-        <h2 className="text-3xl font-semibold">Why Choose Resume Analyzer?</h2>
+        <h2 className="text-3xl font-semibold">Why Choose Resume-Hub?</h2>
         <div className="mt-8 grid md:grid-cols-3 gap-8">
           <div className="p-6 bg-white shadow-lg rounded-lg">
             <CheckCircle className="text-blue-600 w-12 h-12 mx-auto" />
@@ -96,7 +96,7 @@ export default function LandingPage() {
       {/* Call-To-Action */}
       <section className="py-16 text-center">
         <h2 className="text-3xl font-semibold">Ready to Improve Your Resume?</h2>
-        <p className="mt-4 text-lg text-gray-600">Get started with our AI-powered resume analyzer today.</p>
+        <p className="mt-4 text-lg text-gray-600">Get started with our AI-powered Resume-Hub today.</p>
         <Link to="/login">
           <button className="mt-6 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition">
             Get Started

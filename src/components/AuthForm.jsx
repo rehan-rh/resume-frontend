@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { toast } from 'react-hot-toast';
+import Cookies from "js-cookie";
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -53,6 +54,8 @@ const AuthForm = () => {
       });
 
       localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify( response.data.user ));
+      Cookies.set("token", response.data.token);
       toast.success(`${isLogin ? "Login" : "Sign Up"} Successful!`,{duration: 2000,position:"bottom-left"});
       setFormData({ firstName: "", lastName: "", emailId: "", password: ""});
       navigate("/analyse");

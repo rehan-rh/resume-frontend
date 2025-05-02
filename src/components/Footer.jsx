@@ -8,7 +8,7 @@ const Footer = () => {
         
         {/* Left Side - Branding & Copyright */}
         <div className="text-center md:text-left">
-          <h2 className="text-lg font-bold">Resume Analyzer</h2>
+          <h2 className="text-lg font-bold">Resume-Hub</h2>
           <p className="text-gray-400 text-sm">© {new Date().getFullYear()} All rights reserved.</p>
         </div>
 
